@@ -3,6 +3,7 @@ var schema = new Schema({
         type: Number,
         required: true,
         unique: true,
+        // excel: true,
     },
     isTurn: {
         type: Boolean,
@@ -22,10 +23,22 @@ var schema = new Schema({
         default: false
     },
     cards: [String],
+    // cardsServe: {
+    //     type: Number,
+    //     default: 0
+    // },
     isLastBlind: {
         type: Boolean,
         default: false
-    }
+    },
+    // hasRaised: {
+    //     type: Boolean,
+    //     default: false
+    // },
+    // isAllIn: {
+    //     type: Boolean,
+    //     default: false
+    // }
 });
 schema.plugin(deepPopulate, {
     populate: {
@@ -100,18 +113,19 @@ var model = {
                     isAllIn: 1,
                     hasRaised: 1,
                     isLastBlind: 1,
+                    isBlind:1,
                     _id: 0
                 }).exec(callback);
             },
-            communityCards: function (callback) {
-                CommunityCards.find({}, {
-                    cardNo: 1,
-                    cardValue: 1,
-                    isOpen: 1,
-                    isBurn: 1,
-                    _id: 0
-                }).exec(callback);
-            }
+            // communityCards: function (callback) {
+            //     CommunityCards.find({}, {
+            //         cardNo: 1,
+            //         cardValue: 1,
+            //         isOpen: 1,
+            //         isBurn: 1,
+            //         _id: 0
+            //     }).exec(callback);
+            // }
         }, function (err, data) {
             if (err) {
                 callback(err);
@@ -119,29 +133,41 @@ var model = {
                 var turnPlayer = _.find(data.playerCards, function (player) {
                     return player.isTurn;
                 });
-                var raiseIndex = _.findIndex(data.playerCards, function (player) {
-                    return player.hasRaised;
-                });
+                // var raiseIndex = _.findIndex(data.playerCards, function (player) {
+                //     return player.hasRaised;
+                // });
                 var lastBlindIndex = _.findIndex(data.playerCards, function (player) {
                     return player.isLastBlind;
                 });
-                var blankCardIndex = _.findIndex(data.communityCards, function (card) {
-                    return card.cardValue === "";
-                });
-
+                // var blankCardIndex = _.findIndex(data.communityCards, function (card) {
+                //     return card.cardValue === "";
+                // });
+                console.log("turnplayer");
+                console.log(turnPlayer);
                 if (turnPlayer) {
-                    data.hasTurn = true;
-                    if (raiseIndex < 0 && lastBlindIndex < 0) {
-                        data.isCheck = true;
-                    }
-                    if (turnPlayer.isLastBlind && turnPlayer.isTurn) {
-                        data.isCheck = true;
-                    }
+                     data.hasTurn = true;
+
+                    // if (raiseIndex < 0 && lastBlindIndex < 0) {
+                    //     data.isCheck = true;
+                    // }
+                    // if (turnPlayer.isLastBlind && turnPlayer.isTurn) {
+                    //     data.isCheck = true;
+                    // }
                 } else {
                     data.hasTurn = false;
-                    if (blankCardIndex < 0) {
-                        data.showWinner = true;
+                   
+                    
+                }
+              
+                var activePlayer = _.filter(data.playerCards,
+                    function (player) {
+                        return ((player.cards.length == 3 || player.isActive) && !player.isFold);
                     }
+                );
+                console.log(activePlayer);
+                if (activePlayer && activePlayer.length == 2) {
+                    console.log(activePlayer.length);
+                    data.showWinner = true;
                 }
                 callback(err, data);
             }
@@ -305,10 +331,10 @@ var model = {
                         isFold: false,
                         cards: [],
                         isTurn: false,
-                        cardsServe: 0,
                         isLastBlind: false,
                         hasRaised: false,
-                        isAllIn: false
+                        isAllIn: false,
+                        isBlind: true
                     }
                 }, {
                     multi: true
@@ -605,6 +631,21 @@ var model = {
         }
 
     },
+    makeSeen : function(data, callback){
+        var Model = this;
+        Model.findOneAndUpdate({
+            isTurn: true
+        }, {
+            $set: {
+                isBlind: false
+            }
+        }, {
+            new: true
+        }, function (err, currentTab) {
+            Player.blastSocket();
+            callback(err, currentTab);
+        });
+    },
     blastSocket: function (data, fromUndo) {
         Player.getAll({}, function (err, allData) {
             if (!fromUndo) {
@@ -685,7 +726,6 @@ var model = {
                     $or: [{
                         isActive: true,
                         isFold: false,
-                        isAllIn: false
                     }, {
                         isTurn: true
                     }]
@@ -711,10 +751,10 @@ var model = {
                                 }
                             }, function (err, data) {
                                 callback(err, data);
-
-                                Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], function (err) {
-                                    Player.blastSocket();
-                                });
+                                Player.blastSocket();
+                                // Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], function (err) {
+                                //     Player.blastSocket();
+                                // });
                             });
                         } else {
                             callback("No Element Remaining");
@@ -810,10 +850,8 @@ var model = {
             $or: [{
                 isActive: true,
                 isFold: false,
-                isAllIn: false
-            }, {
-                hasRaised: true
-            }, {
+               
+            },  {
                 isDealer: true
             }]
         }).sort({
@@ -858,9 +896,9 @@ var model = {
 
                 // case 3
                 // When fromPlayer.isDealer && noOne has Raised
-                var lastRaise = _.findIndex(allPlayers, function (n) {
-                    return n.hasRaised;
-                });
+                // var lastRaise = _.findIndex(allPlayers, function (n) {
+                //     return n.hasRaised;
+                // });
                 var lastBlind = _.findIndex(allPlayers, function (n) {
                     return n.isLastBlind;
                 });

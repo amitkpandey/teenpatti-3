@@ -51,20 +51,10 @@ var model = {
             return 0;
         }
 
-        //Check All Community Cards are Distributed
-        // var communityCardsNoDistributed = _.findIndex(communityCards, function (commu) {
-        //     return commu.cardValue === "";
-        // });
-        // if (communityCardsNoDistributed >= 0) {
-        //     callback("Community Cards not Distributed");
-        //     return 0;
-        // }
-
+      
         _.each(players, function (player) {
             player.allCards = _.cloneDeep(player.cards);
-            // _.each(communityCards, function (commu) {
-            //     player.allCards.push(commu.cardValue);
-            // });
+            
             player.hand = Hand.solve(player.allCards);
             player.winName = player.hand.name;
             player.descr = player.hand.descr;

@@ -3,7 +3,6 @@ var schema = new Schema({
         type: Number,
         required: true,
         unique: true,
-        // excel: true,
     },
     isTurn: {
         type: Boolean,
@@ -23,19 +22,7 @@ var schema = new Schema({
         default: false
     },
     cards: [String],
-    cardsServe: {
-        type: Number,
-        default: 0
-    },
     isLastBlind: {
-        type: Boolean,
-        default: false
-    },
-    hasRaised: {
-        type: Boolean,
-        default: false
-    },
-    isAllIn: {
         type: Boolean,
         default: false
     }
@@ -205,7 +192,7 @@ var model = {
                     } else {
                         Player.blastSocketWinner({
                             winners: data.players,
-                           // communityCards: data.communityCards
+                            // communityCards: data.communityCards
                         });
                         callback(null, {
                             winners: data.players,

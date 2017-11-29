@@ -58,7 +58,15 @@ var controller = {
     moveTurn: function (req, res) {
         Player.changeTurn(res.callback);
     },
-
+    makeSeen: function (req, res) {
+        Player.makeSeen(res.callback);
+    },
+    doSideShow: function (req, res) {
+        Player.doSideShow(res.callback);
+    },
+    sideShow: function (req, res) {
+        Player.sideShow(res.callback);
+    }
     //getTabDetail
 
 };

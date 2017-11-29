@@ -31,6 +31,11 @@ var schema = new Schema({
         type: Boolean,
         default: false
     },
+    isBlind: {
+        type: Boolean,
+        default: true
+
+    }
     // hasRaised: {
     //     type: Boolean,
     //     default: false
@@ -113,7 +118,7 @@ var model = {
                     isAllIn: 1,
                     hasRaised: 1,
                     isLastBlind: 1,
-                    isBlind:1,
+                    isBlind: 1,
                     _id: 0
                 }).exec(callback);
             },
@@ -145,7 +150,7 @@ var model = {
                 console.log("turnplayer");
                 console.log(turnPlayer);
                 if (turnPlayer) {
-                     data.hasTurn = true;
+                    data.hasTurn = true;
 
                     // if (raiseIndex < 0 && lastBlindIndex < 0) {
                     //     data.isCheck = true;
@@ -155,10 +160,10 @@ var model = {
                     // }
                 } else {
                     data.hasTurn = false;
-                   
-                    
+
+
                 }
-              
+
                 var activePlayer = _.filter(data.playerCards,
                     function (player) {
                         return ((player.cards.length == 3 || player.isActive) && !player.isFold);
@@ -342,18 +347,20 @@ var model = {
                     fwCallback(err, cards);
                 });
             },
+           
             function (arg1, fwCallback) {
-                CommunityCards.update({}, {
-                    $set: {
-                        cardValue: "",
-                        isOpen: false
-                    }
-                }, {
-                    multi: true
-                }, function (err, cumCards) {
-                    fwCallback(err, cumCards);
-                });
-            }
+            Setting.update({
+                name: "turnLimit"
+            }, {
+                $set: {
+                    value: 1
+                }
+            }, {
+                new: true
+            }, function (err, CurrentTab) {
+                fwCallback(err, CurrentTab);
+            });
+        }
         ], function (err, cumCards) {
             Player.blastSocket({
                 newGame: true
@@ -631,8 +638,9 @@ var model = {
         }
 
     },
-    makeSeen : function(data, callback){
+    makeSeen: function (callback) {
         var Model = this;
+        console.log("Inside the makeSeen");
         Model.findOneAndUpdate({
             isTurn: true
         }, {
@@ -646,6 +654,7 @@ var model = {
             callback(err, currentTab);
         });
     },
+
     blastSocket: function (data, fromUndo) {
         Player.getAll({}, function (err, allData) {
             if (!fromUndo) {
@@ -662,6 +671,11 @@ var model = {
                 }
                 sails.sockets.blast("Update", allData);
             }
+        });
+    },
+    blastSocketSideShow: function (data) {
+        sails.sockets.blast("sideShow", {
+            data: data
         });
     },
     blastSocketWinner: function (data) {
@@ -703,6 +717,120 @@ var model = {
                 });
             },
             Player.changeTurn
+        ], callback);
+    },
+    doSideShow: function (callback) {
+        async.waterfall([
+            Player.currentTurn,
+            function (playerFromTop, callback) {
+                Player.find({
+                    $or: [{
+                        isActive: true,
+                        isFold: false,
+                    }, {
+                        isTurn: true
+                    }]
+                }).exec(function (err, players) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        var turnIndex = _.findIndex(players, function (n) {
+                            return (n._id + "") == (playerFromTop._id + "");
+                        });
+                        if (turnIndex >= 0) {
+                            var nextPlayer = (turnIndex + 1) % players.length;
+                            var finalData = [];
+                            finalData.push(players[nextPlayer]);
+                            finalData.push(players[turnIndex]);
+                            CommunityCards.findWinner(finalData, function (err, winnerData) {
+
+                                // winnerData
+                                //   console.log("finalData",finalData);
+                                //data
+                                // console.log("data",winnerData);
+
+                            });
+                            // Player.blastSocketSideShow(finalData);
+                            callback(null, finalData);
+                            // async.parallel({
+                            //     removeTurn: function (callback) {
+                            //         var player = players[turnIndex];
+                            //         player.isTurn = false;
+                            //         player.save(callback);
+                            //     },
+                            //     addTurn: function (callback) {
+                            //         var newTurnIndex = (turnIndex + 1) % players.length;
+                            //         var player = players[newTurnIndex];
+                            //         player.isTurn = true;
+                            //         player.save(callback);
+                            //     }
+                            // }, function (err, data) {
+                            //     callback(err, data);
+                            //     Player.blastSocket();
+                            //     // Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], function (err) {
+                            //     //     Player.blastSocket();
+                            //     // });
+                            // });
+                        } else {
+                            callback("No Element Remaining");
+                        }
+                    }
+                });
+
+            }
+        ], callback);
+    },
+    sideShow: function (callback) {
+        async.waterfall([
+            Player.currentTurn,
+            function (playerFromTop, callback) {
+                Player.find({
+                    $or: [{
+                        isActive: true,
+                        isFold: false,
+                    }, {
+                        isTurn: true
+                    }]
+                }).exec(function (err, players) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        var turnIndex = _.findIndex(players, function (n) {
+                            return (n._id + "") == (playerFromTop._id + "");
+                        });
+                        if (turnIndex >= 0) {
+                            var nextPlayer = (turnIndex + 1) % players.length;
+                            var finalData = {};
+                            finalData.toPlayer = players[nextPlayer];
+                            finalData.fromPlayer = players[turnIndex];
+                            Player.blastSocketSideShow(finalData);
+                            callback(null, finalData);
+                            // async.parallel({
+                            //     removeTurn: function (callback) {
+                            //         var player = players[turnIndex];
+                            //         player.isTurn = false;
+                            //         player.save(callback);
+                            //     },
+                            //     addTurn: function (callback) {
+                            //         var newTurnIndex = (turnIndex + 1) % players.length;
+                            //         var player = players[newTurnIndex];
+                            //         player.isTurn = true;
+                            //         player.save(callback);
+                            //     }
+                            // }, function (err, data) {
+                            //     callback(err, data);
+                            //     Player.blastSocket();
+                            //     // Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], function (err) {
+                            //     //     Player.blastSocket();
+                            //     // });
+                            // });
+                        } else {
+                            callback("No Element Remaining");
+                        }
+                    }
+                });
+
+            }
         ], callback);
     },
     currentTurn: function (callback) {
@@ -752,9 +880,11 @@ var model = {
                             }, function (err, data) {
                                 callback(err, data);
                                 Player.blastSocket();
-                                // Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], function (err) {
-                                //     Player.blastSocket();
-                                // });
+                                
+                                Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], function (err) {
+                                    Player.blastSocket();
+                                });
+                            
                             });
                         } else {
                             callback("No Element Remaining");
@@ -850,8 +980,8 @@ var model = {
             $or: [{
                 isActive: true,
                 isFold: false,
-               
-            },  {
+
+            }, {
                 isDealer: true
             }]
         }).sort({
@@ -863,61 +993,78 @@ var model = {
                 callback("No Players found in Whether to end turn");
             } else {
 
-                var fromPlayerPartition = _.partition(allPlayers, function (n) {
-                    return n.playerNo >= fromPlayer.playerNo;
-                });
-
-                var fromPlayerFirst = _.concat(fromPlayerPartition[0], fromPlayerPartition[1]);
-
-                var toIndex = _.findIndex(fromPlayerFirst, function (n) {
-                    return n.playerNo == toPlayer.playerNo;
-                });
-                var fromPlayerToPlayer = _.slice(fromPlayerFirst, 0, toIndex + 1);
 
                 var removeAllTurn = false;
-                var isWinner = false;
-                // case 1 
-                // When fromPlayer.isLastBlind checks
-                if (fromPlayer.isLastBlind) {
-                    red(1);
-                    removeAllTurn = true;
-                }
 
-                // case 2
-                // When toPlayer.hasRaised
-                var isRaisedBetween = _.findIndex(fromPlayerToPlayer, function (n, index) {
-                    return (n.hasRaised && index !== 0);
-                });
-                // Find Players between 
-                if (isRaisedBetween > 0) {
-                    red(2);
-                    removeAllTurn = true;
-                }
 
-                // case 3
-                // When fromPlayer.isDealer && noOne has Raised
-                // var lastRaise = _.findIndex(allPlayers, function (n) {
-                //     return n.hasRaised;
-                // });
-                var lastBlind = _.findIndex(allPlayers, function (n) {
-                    return n.isLastBlind;
+                var turnIndex = _.findIndex(allPlayers, function (n) {
+                    return n.isTurn;
                 });
 
-                var isDealerBetween = _.findIndex(fromPlayerToPlayer, function (n, index) {
-                    return (n.isDealer && (index != (fromPlayerToPlayer.length - 1)));
+                var dealerIndex = _.findIndex(allPlayers, function (n) {
+                    return n.isDealer;
                 });
-                // Find Players between 
-                if (isRaisedBetween > 0) {
-                    red(3);
-                    removeAllTurn = true;
-                }
-                // Main Error in Dealer Related Search WHEN Dealer Folds
-                if (lastRaise < 0 && lastBlind < 0 && isDealerBetween >= 0) {
-                    removeAllTurn = true;
+
+                var isDealerFoldIndex = _.findIndex(allPlayers, function (n) {
+                    return (n.isDealer && n.isFold);
+                });
+
+                var newTurnIndex = (dealerIndex + 1) % allPlayers.length;
+
+                var totalBlind = _.filter(allPlayers, function (n) {
+                    return (n.isFold || n.isBlind);
+                });
+               console.log("fromPlayer", fromPlayer)
+                if ((isDealerFoldIndex < 0 && turnIndex == dealerIndex ) || (isDealerFoldIndex >= 0 && turnIndex == newTurnIndex && fromPlayer.playerNo != allPlayers[dealerIndex].playerNo)) {
+                    console.log("inside");
+                    Setting.findOne({
+                        name: "turnLimit"
+                    }).exec(
+                        function (err, data) {
+                            if (err) {
+                                callback(err);
+                            } else {
+                                // if(data.value == 3 && totalBlind && allPlayer.length == totalBlind.length){
+                                //     removeAllTurn = true;
+                                // }else{
+                                if (!_.isEmpty(data)) {
+                                    console.log("blind", totalBlind.length);
+                                    console.log("allplayer", allPlayers.length);
+                                    console.log("datavalue", data.value);
+                                    if (data.value == 3 && totalBlind && allPlayers.length == totalBlind.length) {
+                                        //console.log(totalBlind.length);
+                                        Player.update({
+                                            isActive: true,
+                                            isFold: false
+                                        }, {
+                                            $set: {
+                                                isBlind: false
+                                            }
+                                        }, {
+                                            multi: true
+                                        }, function (err, data) {
+                                            Player.blastSocket();
+                                            callback(err, data);
+                                        });
+
+                                    } else {
+                                        data.value = Number(data.value) + 1;
+                                        data.save(function (data) {});
+                                    }
+                                } else {
+
+                                    data = {};
+                                    data.name = "turnLimit";
+                                    data.value = 0;
+                                    Setting.saveData(data, function (data) {});
+                                }
+                                //  }
+                            }
+                        }
+                    );
                 }
 
-
-                //case 4 from Player and To Player is Same
+                //case 2 from Player and To Player is Same
                 if (fromPlayer.playerNo == toPlayer.playerNo) {
                     removeAllTurn = true;
                 }
@@ -925,17 +1072,7 @@ var model = {
 
                 if (removeAllTurn) {
                     //Show Winner to be checked
-                    Player.update({}, {
-                        $set: {
-                            hasRaised: false,
-                            isLastBlind: false,
-                            isTurn: false
-                        }
-                    }, {
-                        multi: true
-                    }, function (err) {
-                        callback(err);
-                    });
+                    console.log("inside removeAllTurn");
                 } else {
                     callback(null);
                 }

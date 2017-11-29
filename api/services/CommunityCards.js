@@ -51,46 +51,27 @@ var model = {
             return 0;
         }
 
-      
+
         _.each(players, function (player) {
             player.allCards = _.cloneDeep(player.cards);
-            
-            player.hand = Hand.solve(player.allCards);
-            player.winName = player.hand.name;
-            player.descr = player.hand.descr;
+            player.detail = teenPattiSolver(player.allCards);
         });
-
-        var rank = 1;
-        var isAllComplete = false;
-        while (!isAllComplete) {
-            var remainingPlayers = _.filter(players, function (n) {
-                n.hand = Hand.solve(n.allCards);
-                return !(n.winRank);
+        var scores = _.reverse(_.sortedUniq(_.map(players, "detail.score")));
+        var Rank = 1;
+        _.each(scores, function (value, key) {
+            var winners = _.filter(players, function (data) {
+                return (data.detail.score == value)
             });
-            if (remainingPlayers.length === 0) {
-                isAllComplete = true;
-            } else {
-                var winners = Hand.winners(_.map(remainingPlayers, "hand"));
-                _.each(players, function (player) {
-                    var index = _.findIndex(winners, function (winner) {
-                        return player.hand == winner;
-                    });
-                    if (index >= 0) {
-                        if (rank == 1) {
-                            player.winner = true;
-                        }
-
-                        player.winRank = rank;
-                    }
-                    player.hand = undefined;
-                });
-                rank++;
-            }
-
-        }
-        _.each(players, function (player) {
-            player.hand = undefined;
+            _.each(winners, function (data) {
+                if (Rank == 1) {
+                    data.winner = true;
+                }
+                data.winRank = Rank
+            });
+            Rank++;
         });
+        console.log(scores);
+        console.log("players", players);
         callback();
     },
     removeCards: function (data, callback) {

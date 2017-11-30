@@ -122,6 +122,29 @@ var model = {
                     _id: 0
                 }).exec(callback);
             },
+            currentGameType: function (callback) {
+                GameType.find({}).exec(
+                    function (err, data) {
+                        if (err) {
+                            callback(err);
+                        } else {
+                            var gameIndex = _.findIndex(data, function (game) {
+                                return game.currentType
+                            });
+                            if (gameIndex >= 0) {
+                                callback(err, data[gameIndex]);
+                            } else {
+                                var normalGameIndex = _.findIndex(data, function (game) {
+                                    return game.name == 'Normal';
+                                });
+
+                                callback(err, data[normalGameIndex]);
+
+                            }
+                        }
+                    }
+                );
+            }
             // communityCards: function (callback) {
             //     CommunityCards.find({}, {
             //         cardNo: 1,
@@ -170,7 +193,7 @@ var model = {
                     }
                 );
                 console.log(activePlayer);
-                if (activePlayer && activePlayer.length == 2) {
+                if (activePlayer && activePlayer.length <= 2) {
                     console.log(activePlayer.length);
                     data.showWinner = true;
                 }
@@ -211,16 +234,42 @@ var model = {
                     isActive: true,
                     isFold: false
                 }).lean().exec(callback);
+            },
+            currentGameType: function (callback) {
+                GameType.find({}).exec(
+                    function (err, data) {
+                        if (err) {
+                            callback(err);
+                        } else {
+                            var gameIndex = _.findIndex(data, function (game) {
+                                return game.currentType
+                            });
+                            if (gameIndex >= 0) {
+                                callback(err, data[gameIndex]);
+                            } else {
+                                var normalGameIndex = _.findIndex(data, function (game) {
+                                    return game.name == 'Normal';
+                                });
+                                if (normalGameIndex >= 0) {
+                                    callback(err, data[normalGameIndex]);
+                                } else {
+                                    callback();
+                                }
+                            }
+                        }
+                    }
+                );
             }
         }, function (err, data) {
             if (err) {
                 callback(err);
             } else {
                 //Check All Player Cards are Placed
-                CommunityCards.findWinner(data.players, function (err, finalVal) {
+                CommunityCards.findWinner(data.players, data.currentGameType, function (err, finalVal) {
                     if (err) {
                         callback(err);
                     } else {
+                        console.log("data.players", data.players);
                         Player.blastSocketWinner({
                             winners: data.players,
                             // communityCards: data.communityCards
@@ -347,20 +396,20 @@ var model = {
                     fwCallback(err, cards);
                 });
             },
-           
+
             function (arg1, fwCallback) {
-            Setting.update({
-                name: "turnLimit"
-            }, {
-                $set: {
-                    value: 1
-                }
-            }, {
-                new: true
-            }, function (err, CurrentTab) {
-                fwCallback(err, CurrentTab);
-            });
-        }
+                Setting.update({
+                    name: "turnLimit"
+                }, {
+                    $set: {
+                        value: 1
+                    }
+                }, {
+                    new: true
+                }, function (err, CurrentTab) {
+                    fwCallback(err, CurrentTab);
+                });
+            }
         ], function (err, cumCards) {
             Player.blastSocket({
                 newGame: true
@@ -530,17 +579,43 @@ var model = {
                 },
                 communityCards: function (callback) {
                     CommunityCards.find().exec(callback);
+                },
+                currentGameType: function (callback) {
+                    GameType.find({}).exec(
+                        function (err, data) {
+                            if (err) {
+                                callback(err);
+                            } else {
+                                var gameIndex = _.findIndex(data, function (game) {
+                                    return game.currentType
+                                });
+                                if (gameIndex >= 0) {
+                                    callback(err, data[gameIndex]);
+                                } else {
+                                    var normalGameIndex = _.findIndex(data, function (game) {
+                                        return game.name == 'Normal';
+                                    });
+                                    if (normalGameIndex >= 0) {
+                                        callback(err, data[normalGameIndex]);
+                                    } else {
+                                        callback();
+                                    }
+                                }
+                            }
+                        }
+                    );
                 }
             }, function (err, response) {
                 // Initialize all variables
                 var allCards = [];
                 var playerCards = [];
+                var cardsToServe = response.currentGameType.totalCards;
                 var playerCount = response.players.length;
                 var communityCards = [];
                 var communityCardCount = 0;
                 var dealerNo = -1;
                 var maxCommunityCard = 0;
-                var maxCardsPerPlayer = 3;
+                var maxCardsPerPlayer = cardsToServe;
                 _.each(response.players, function (player, index) {
                     playerCards = _.concat(playerCards, player.cards);
                     if (player.isDealer) {
@@ -587,7 +662,7 @@ var model = {
                         } else {
                             callback(err, "Card Provided to Player " + response.players[toServe].playerNo);
                             if (playerCards.length + 1 == (playerCount * maxCardsPerPlayer)) {
-                                Player.makeTurn("LastPlayerCard", function (err, data) {
+                                Player.makeTurn("", function (err, data) {
                                     Player.blastSocket({
                                         player: true,
                                         value: response.players[toServe].playerNo
@@ -720,9 +795,35 @@ var model = {
         ], callback);
     },
     doSideShow: function (callback) {
+
         async.waterfall([
             Player.currentTurn,
             function (playerFromTop, callback) {
+                GameType.find({}).exec(
+                    function (err, data) {
+                        if (err) {
+                            callback(err);
+                        } else {
+                            var gameIndex = _.findIndex(data, function (game) {
+                                return game.currentType
+                            });
+                            if (gameIndex >= 0) {
+                                callback(err, playerFromTop, data[gameIndex]);
+                            } else {
+                                var normalGameIndex = _.findIndex(data, function (game) {
+                                    return game.name == 'Normal';
+                                });
+                                if (normalGameIndex >= 0) {
+                                    callback(err, playerFromTop, data[normalGameIndex]);
+                                } else {
+                                    callback();
+                                }
+                            }
+                        }
+                    }
+                );
+            },
+            function (playerFromTop, gameType, callback) {
                 Player.find({
                     $or: [{
                         isActive: true,
@@ -730,7 +831,7 @@ var model = {
                     }, {
                         isTurn: true
                     }]
-                }).exec(function (err, players) {
+                }).lean().exec(function (err, players) {
                     if (err) {
                         callback(err);
                     } else {
@@ -742,16 +843,58 @@ var model = {
                             var finalData = [];
                             finalData.push(players[nextPlayer]);
                             finalData.push(players[turnIndex]);
-                            CommunityCards.findWinner(finalData, function (err, winnerData) {
+                            CommunityCards.findWinner(finalData, gameType, function (err, winnerData) {
+                                if (err) {
+                                    callback(err);
+                                } else {
+                                    var looseIndex = _.findIndex(finalData, function (value) {
+                                        return (value.winRank == 2);
+                                    });
 
+                                    var turnIndex = _.findIndex(finalData, function (value) {
+                                        return value.isTurn;
+                                    });
+
+                                    if (looseIndex >= 0) {
+                                        if (looseIndex == turnIndex) {
+                                            Player.fold({}, function (err, data) {
+                                                if (err) {
+                                                    callback(err);
+                                                } else {
+                                                    Player.blastSocket();
+                                                    callback();
+                                                    return 0;
+                                                }
+                                            });
+                                        } else {
+                                            console.log("inside the condition");
+                                            async.waterfall([
+                                                    Player.changeTurn,
+                                                    Player.fold
+                                                ],
+                                                function (err, data) {
+                                                    if (err) {
+                                                        callback(err);
+                                                    } else {
+                                                        Player.blastSocket();
+                                                        callback();
+                                                        return 0;
+                                                    }
+                                                });
+                                        }
+                                    } else {
+                                        callback(null, "Split Pot");
+                                    }
+                                }
                                 // winnerData
-                                //   console.log("finalData",finalData);
+
                                 //data
-                                // console.log("data",winnerData);
+                                console.log("data", finalData);
 
                             });
+
                             // Player.blastSocketSideShow(finalData);
-                            callback(null, finalData);
+
                             // async.parallel({
                             //     removeTurn: function (callback) {
                             //         var player = players[turnIndex];
@@ -880,11 +1023,11 @@ var model = {
                             }, function (err, data) {
                                 callback(err, data);
                                 Player.blastSocket();
-                                
+
                                 Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], function (err) {
                                     Player.blastSocket();
                                 });
-                            
+
                             });
                         } else {
                             callback("No Element Remaining");
@@ -1011,11 +1154,13 @@ var model = {
 
                 var newTurnIndex = (dealerIndex + 1) % allPlayers.length;
 
-                var totalBlind = _.filter(allPlayers, function (n) {
-                    return (n.isFold || n.isBlind);
+                var totalActive = _.filter(allPlayers, function (n) {
+                    return (!n.isFold && n.isActive);
                 });
-               console.log("fromPlayer", fromPlayer)
-                if ((isDealerFoldIndex < 0 && turnIndex == dealerIndex ) || (isDealerFoldIndex >= 0 && turnIndex == newTurnIndex && fromPlayer.playerNo != allPlayers[dealerIndex].playerNo)) {
+
+
+                //console.log("fromPlayer", fromPlayer)
+                if ((isDealerFoldIndex < 0 && turnIndex == dealerIndex) || (isDealerFoldIndex >= 0 && turnIndex == newTurnIndex && fromPlayer.playerNo != allPlayers[dealerIndex].playerNo)) {
                     console.log("inside");
                     Setting.findOne({
                         name: "turnLimit"
@@ -1028,10 +1173,10 @@ var model = {
                                 //     removeAllTurn = true;
                                 // }else{
                                 if (!_.isEmpty(data)) {
-                                    console.log("blind", totalBlind.length);
-                                    console.log("allplayer", allPlayers.length);
-                                    console.log("datavalue", data.value);
-                                    if (data.value == 3 && totalBlind && allPlayers.length == totalBlind.length) {
+                                    // console.log("blind", totalBlind.length);
+                                    // console.log("allplayer", allPlayers.length);
+                                    // console.log("datavalue", data.value);
+                                    if (data.value == 3) {
                                         //console.log(totalBlind.length);
                                         Player.update({
                                             isActive: true,
@@ -1066,13 +1211,25 @@ var model = {
 
                 //case 2 from Player and To Player is Same
                 if (fromPlayer.playerNo == toPlayer.playerNo) {
+
                     removeAllTurn = true;
                 }
-
-
+                console.log("totalActive", totalActive);
+                // only 1 player left
+                if (totalActive == 1) {
+                    removeAllTurn = true;
+                }
                 if (removeAllTurn) {
                     //Show Winner to be checked
-                    console.log("inside removeAllTurn");
+                    Player.update({}, {
+                        $set: {
+                            isTurn: false
+                        }
+                    }, {
+                        multi: true
+                    }, function () {
+                        callback();
+                    });
                 } else {
                     callback(null);
                 }

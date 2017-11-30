@@ -2,7 +2,8 @@ var schema = new Schema({
     name: {
         type: String,
     },
-    value: String
+    value: String,
+    visible:Boolean
 });
 
 schema.plugin(deepPopulate, {});

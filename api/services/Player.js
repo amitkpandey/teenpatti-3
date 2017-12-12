@@ -289,10 +289,12 @@ var model = {
                         console.log("data.players", data.players);
                         Player.blastSocketWinner({
                             winners: data.players,
+                            gameType: data.currentGameType
                             // communityCards: data.communityCards
                         });
                         callback(null, {
                             winners: data.players,
+                            gameType: data.currentGameType
                             //communityCards: data.communityCards
                         });
                     }
@@ -690,6 +692,7 @@ var model = {
                     playerServe = false;
                     response.currentGameType.save(function (err, data1) {
                         //console.log("JokerCard assigned", data.card);
+                        Player.blastSocket();
                         callback(err, "JokerCard assigned");
                         return 0;
                     });
@@ -914,7 +917,7 @@ var model = {
                                                 }
                                             });
                                         } else {
-                                           // console.log("inside the condition");
+                                            // console.log("inside the condition");
                                             async.waterfall([
                                                     Player.changeTurn,
                                                     Player.fold
@@ -938,7 +941,7 @@ var model = {
                                 // winnerData
 
                                 //data
-                               // console.log("data", finalData);
+                                // console.log("data", finalData);
 
                             });
 

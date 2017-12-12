@@ -51,17 +51,23 @@ var model = {
             return 0;
         }
         var funcName = gameType.evaluateFunc;
-        console.log(gameType.evaluateFunc);
+       // console.log(gameType.evaluateFunc);
         _.each(players, function (player) {
             player.allCards = _.cloneDeep(player.cards);
-            player.detail = teenPattiSolver[funcName](player.allCards);
-            console.log("player.detail", player.detail);
-            console.log("player", player);
+            if (funcName == 'scoreHandsJoker') {
+              //  console.log(funcName);
+              //  console.log(player.allCards);
+                player.detail = teenPattiSolver[funcName](player.allCards, gameType.jokerCard); 
+            } else {
+                player.detail = teenPattiSolver[funcName](player.allCards);
+            }
+           // console.log("player.detail", player.detail);
+           // console.log("player", player);
         });
 
-        var scores = _.map(players, function(data){
-           return Number(data.detail.score);
-        });
+        var scores = _.uniq(_.map(players, function (data) {
+            return Number(data.detail.score);
+        }));
         //var scoresNumber = _.map(scores, Number);
         scores.sort(function (a, b) {
             return b - a
@@ -70,10 +76,10 @@ var model = {
         // var scores = _.sortedUniq(_.map(players, function (data) {
         //     return Number(data.detail.score);
         // }));
-        console.log(scores);
+      //  console.log(scores);
         var Rank = 1;
         _.each(scores, function (value, key) {
-            console.log(value);
+          //  console.log(value);
             var winners = _.filter(players, function (data) {
                 return (data.detail.score == value)
             });

@@ -16,7 +16,8 @@ var schema = new Schema({
     currentType: {
         type: Boolean,
         default: false
-    }
+    },
+    jokerCard : String
 });
 
 schema.plugin(deepPopulate, {});

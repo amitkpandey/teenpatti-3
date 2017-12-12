@@ -202,8 +202,8 @@ var model = {
                 );
                 data.cardServed = false;
                 //cardServed
-                if(cardsRemainToserve < 0){
-                   data.cardServed = true;  
+                if (cardsRemainToserve < 0) {
+                    data.cardServed = true;
                 }
                 console.log(cardsRemainToserve);
                 // console.log(activePlayer);
@@ -426,6 +426,20 @@ var model = {
                 }, function (err, CurrentTab) {
                     fwCallback(err, CurrentTab);
                 });
+            },
+            function (arg1, fwCallback) {
+                GameType.update({
+
+                }, {
+                    $set: {
+                        jokerCard: ""
+                    }
+                }, {
+                    new: true,
+                    multi: true
+                }, function (err, CurrentTab) {
+                    fwCallback(err, CurrentTab);
+                });
             }
         ], function (err, cumCards) {
             Player.blastSocket({
@@ -627,12 +641,14 @@ var model = {
                 var allCards = [];
                 var playerCards = [];
                 var cardsToServe = response.currentGameType.totalCards;
+                var currentGame = response.currentGameType.name;
                 var playerCount = response.players.length;
                 var communityCards = [];
                 var communityCardCount = 0;
                 var dealerNo = -1;
                 var maxCommunityCard = 0;
                 var maxCardsPerPlayer = cardsToServe;
+                var playerServe = true;
                 _.each(response.players, function (player, index) {
                     playerCards = _.concat(playerCards, player.cards);
                     if (player.isDealer) {
@@ -647,6 +663,7 @@ var model = {
                 });
                 communityCardCount = communityCards.length;
                 allCards = _.concat(communityCards, playerCards);
+
 
 
                 // check whether no of players are greater than 1
@@ -667,61 +684,73 @@ var model = {
                     callback("Duplicate Entry - Card Already Used");
                     return 0;
                 }
-                if (playerCards.length < (playerCount * maxCardsPerPlayer)) {
-                    // Add card to Players
-                    var remainder = playerCards.length % playerCount;
-                    var toServe = (dealerNo + remainder + 1) % playerCount;
-                    var toServePlayer = response.players[toServe];
-                    toServePlayer.cards.push(data.card);
-                    toServePlayer.save(function (err, data) {
-                        if (err) {
-                            callback(err);
-                        } else {
-                            callback(err, "Card Provided to Player " + response.players[toServe].playerNo);
-                            if (playerCards.length + 1 == (playerCount * maxCardsPerPlayer)) {
-                                Player.makeTurn("", function (err, data) {
+
+                if (currentGame == 'Joker' && allCards.length == 0 && _.isEmpty(response.currentGameType.jokerCard)) {
+                    response.currentGameType.jokerCard = data.card;
+                    playerServe = false;
+                    response.currentGameType.save(function (err, data1) {
+                        //console.log("JokerCard assigned", data.card);
+                        callback(err, "JokerCard assigned");
+                        return 0;
+                    });
+
+                } else {
+                    if (playerCards.length < (playerCount * maxCardsPerPlayer)) {
+                        // Add card to Players
+                        var remainder = playerCards.length % playerCount;
+                        var toServe = (dealerNo + remainder + 1) % playerCount;
+                        var toServePlayer = response.players[toServe];
+                        toServePlayer.cards.push(data.card);
+                        toServePlayer.save(function (err, data) {
+                            if (err) {
+                                callback(err);
+                            } else {
+                                callback(err, "Card Provided to Player " + response.players[toServe].playerNo);
+                                if (playerCards.length + 1 == (playerCount * maxCardsPerPlayer)) {
+                                    Player.makeTurn("", function (err, data) {
+                                        Player.blastSocket({
+                                            player: true,
+                                            value: response.players[toServe].playerNo
+                                        });
+                                    });
+                                } else {
                                     Player.blastSocket({
                                         player: true,
                                         value: response.players[toServe].playerNo
                                     });
-                                });
-                            } else {
-                                Player.blastSocket({
-                                    player: true,
-                                    value: response.players[toServe].playerNo
-                                });
+                                }
                             }
-                        }
-                    });
-                } else if (communityCardCount < maxCommunityCard) {
-                    // Add card to Community Cards
-                    var toServeCommuCard = response.communityCards[communityCardCount];
-                    toServeCommuCard.cardValue = data.card;
-                    toServeCommuCard.save(function (err, data) {
-                        if (err) {
-                            callback(err);
-                        } else {
+                        });
+                    } else if (communityCardCount < maxCommunityCard) {
+                        // Add card to Community Cards
+                        var toServeCommuCard = response.communityCards[communityCardCount];
+                        toServeCommuCard.cardValue = data.card;
+                        toServeCommuCard.save(function (err, data) {
+                            if (err) {
+                                callback(err);
+                            } else {
 
-                            callback(err, "Card Provided to Community Card No " + (communityCardCount + 1));
+                                callback(err, "Card Provided to Community Card No " + (communityCardCount + 1));
 
-                            if (communityCardCount == 3 || communityCardCount == 5 || communityCardCount == 7) {
-                                Player.makeTurn(communityCardCount, function (err, data) {
+                                if (communityCardCount == 3 || communityCardCount == 5 || communityCardCount == 7) {
+                                    Player.makeTurn(communityCardCount, function (err, data) {
+                                        Player.blastSocket({
+                                            player: false,
+                                            value: communityCardCount
+                                        });
+                                    });
+                                } else {
                                     Player.blastSocket({
                                         player: false,
                                         value: communityCardCount
                                     });
-                                });
-                            } else {
-                                Player.blastSocket({
-                                    player: false,
-                                    value: communityCardCount
-                                });
+                                }
                             }
-                        }
-                    });
-                } else {
-                    callback("All Cards are Served");
-                    return 0;
+                        });
+                    } else {
+                        callback("All Cards are Served");
+                        return 0;
+                    }
                 }
             });
         } else {
@@ -874,6 +903,7 @@ var model = {
 
                                     if (looseIndex >= 0) {
                                         if (looseIndex == turnIndex) {
+                                            //console.log("Loose index is equal to turn index", looseIndex, turnIndex);
                                             Player.fold({}, function (err, data) {
                                                 if (err) {
                                                     callback(err);
@@ -884,7 +914,7 @@ var model = {
                                                 }
                                             });
                                         } else {
-                                            console.log("inside the condition");
+                                           // console.log("inside the condition");
                                             async.waterfall([
                                                     Player.changeTurn,
                                                     Player.fold
@@ -900,13 +930,15 @@ var model = {
                                                 });
                                         }
                                     } else {
-                                        callback(null, "Split Pot");
+                                        Player.changeTurn(function (err, data) {
+                                            callback(err, "Split Pot");
+                                        });
                                     }
                                 }
                                 // winnerData
 
                                 //data
-                                console.log("data", finalData);
+                               // console.log("data", finalData);
 
                             });
 
@@ -1037,7 +1069,7 @@ var model = {
                                     player.isTurn = true;
                                     player.save(callback);
                                 },
-                                turnLimit: function(callback){
+                                turnLimit: function (callback) {
                                     Setting.findOne({
                                         name: "turnLimit"
                                     }).exec(callback);
@@ -1046,7 +1078,7 @@ var model = {
                                 callback(err, data);
                                 Player.blastSocket();
 
-                                Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], data.turnLimit,function (err) {
+                                Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], data.turnLimit, function (err) {
                                     Player.blastSocket();
                                 });
 
@@ -1140,7 +1172,7 @@ var model = {
             Player.changeTurn
         ], callback);
     },
-    whetherToEndTurn: function (fromPlayer, toPlayer, turnLimit,callback) {
+    whetherToEndTurn: function (fromPlayer, toPlayer, turnLimit, callback) {
         Player.find({
             $or: [{
                 isActive: true,
@@ -1179,8 +1211,8 @@ var model = {
                 var totalActive = _.filter(allPlayers, function (n) {
                     return (!n.isFold && n.isActive);
                 });
-                
-                var blindIndex = _.findIndex(allPlayers, function(n){
+
+                var blindIndex = _.findIndex(allPlayers, function (n) {
                     return (!n.isFold && n.isBlind);
                 });
                 if (fromPlayer.playerNo == toPlayer.playerNo) {
@@ -1205,50 +1237,50 @@ var model = {
 
                     });
                 } else {
-               
-                    if (turnLimit.value == 4 && blindIndex >= 0) {
-                        //console.log(totalBlind.length);
-                        Player.update({
-                            isActive: true,
-                            isFold: false
-                        }, {
-                            $set: {
-                                isBlind: false
-                            }
-                        }, {
-                            multi: true
-                        }, function (err, data) {
-                            Player.blastSocket();
-                            callback(err, data);
-                        });
-                    }
 
-                    //console.log("fromPlayer", fromPlayer)
-                    if ((isDealerFoldIndex < 0 && turnIndex == dealerIndex) || (isDealerFoldIndex >= 0 && turnIndex == newTurnIndex && fromPlayer.playerNo != allPlayers[dealerIndex].playerNo)) {
-                      
-                                    // if(data.value == 3 && totalBlind && allPlayer.length == totalBlind.length){
-                                    //     removeAllTurn = true;
-                                    // }else{
-                                    if (!_.isEmpty(turnLimit)) {
-                                        // console.log("blind", totalBlind.length);
-                                        // console.log("allplayer", allPlayers.length);
-                                        // console.log("datavalue", data.value);
-                                        
-                                            //console.log(totalBlind.length);
-                                           
-                                            turnLimit.value = Number(turnLimit.value) + 1;
-                                            turnLimit.save(function (data) {});
-                                        
-                                    } else {
+                    // if (turnLimit.value == 4 && blindIndex >= 0) {
+                    //     //console.log(totalBlind.length);
+                    //     Player.update({
+                    //         isActive: true,
+                    //         isFold: false
+                    //     }, {
+                    //         $set: {
+                    //             isBlind: false
+                    //         }
+                    //     }, {
+                    //         multi: true
+                    //     }, function (err, data) {
+                    //         Player.blastSocket();
+                    //         callback(err, data);
+                    //     });
+                    // }
 
-                                        data = {};
-                                        data.name = "turnLimit";
-                                        data.value = 0;
-                                        Setting.saveData(data, function (data) {});
-                                    }
-                                    //  }
-                              
-                    }
+                    // //console.log("fromPlayer", fromPlayer)
+                    // if ((isDealerFoldIndex < 0 && turnIndex == dealerIndex) || (isDealerFoldIndex >= 0 && turnIndex == newTurnIndex && fromPlayer.playerNo != allPlayers[dealerIndex].playerNo)) {
+
+                    //     // if(data.value == 3 && totalBlind && allPlayer.length == totalBlind.length){
+                    //     //     removeAllTurn = true;
+                    //     // }else{
+                    //     if (!_.isEmpty(turnLimit)) {
+                    //         // console.log("blind", totalBlind.length);
+                    //         // console.log("allplayer", allPlayers.length);
+                    //         // console.log("datavalue", data.value);
+
+                    //         //console.log(totalBlind.length);
+
+                    //         turnLimit.value = Number(turnLimit.value) + 1;
+                    //         turnLimit.save(function (data) {});
+
+                    //     } else {
+
+                    //         data = {};
+                    //         data.name = "turnLimit";
+                    //         data.value = 1;
+                    //         Setting.saveData(data, function (data) {});
+                    //     }
+                    //     //  }
+
+                    // }
                 }
                 //case 2 from Player and To Player is Same
 

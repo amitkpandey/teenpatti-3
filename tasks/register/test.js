@@ -1,5 +1,5 @@
 /**
- * `prod`
+ * `test`
  *
  * ---------------------------------------------------------------
  *
@@ -12,5 +12,7 @@
  *
  */
 module.exports = function (grunt) {
-    grunt.registerTask('prod', ['copy:assets', 'copy:frontend', 'copy:copyBackend']);
+    grunt.registerTask('test', [
+        'mocha_istanbul:coverage'
+    ]);
 };

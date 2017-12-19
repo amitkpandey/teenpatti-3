@@ -1,9 +1,8 @@
 module.exports = function (grunt) {
     var folderName = grunt.option('target');
     var productionString = "";
-    var jsFiles;
     if (folderName) {
-        jsFiles = require("../../" + folderName + "/files.js");
+        var jsFiles = require("../../" + folderName + "/files.js");
     }
     var env = false;
     var isProduction = grunt.option('production');
@@ -23,6 +22,7 @@ module.exports = function (grunt) {
                 _: require("lodash"),
                 jsFiles: jsFiles,
                 adminurl: env.realHost + "/api/",
+                adminUUU: env.realHost
             }
         }
     });

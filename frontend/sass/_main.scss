@@ -1,0 +1,728 @@
+/* Bootstrap Variables Goes Here */
+
+$brand-primary: #0d9dff !default;
+$brand-success: #84ce3c !default;
+$brand-warning: #ffec39 !default;
+$brand-danger: #fc483f !default;
+$brand-info: #000072 !default;
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
+
+/* Bootstrap Variables Goes Here */
+
+@import "other/font-fix";
+body {
+    font-family: "AvenirLTStd-Roman";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img.loading {
+    text-align: center;
+    opacity: 1;
+    width: 32px !important;
+    height: auto;
+}
+
+img {
+    opacity: 0;
+    transition: all 300ms ease;
+}
+
+img.doneLoading {
+    opacity: 1;
+}
+
+img.enable-turn {
+    @include filter(hue-rotate(79deg) saturate(1.6));
+}
+
+nav li:hover .dropdown-menu {
+    display: block;
+}
+
+#map img {
+    opacity: 1;
+}
+
+a,
+.btn,
+[ui-sref] {
+    cursor: pointer;
+    transition: all ease 300ms;
+}
+
+//bootstrap forms
+.input-lg,
+.input-group-lg>.form-control,
+.input-group-lg>.input-group-addon,
+.input-group-lg>.input-group-btn>.btn,
+.btn,
+.form-control {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: $brand-primary;
+    outline: 0;
+    box-shadow: none;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-invalid {
+    color: $brand-danger;
+    .form-control {
+        border-color: $brand-danger;
+        color: $brand-danger;
+        &::-webkit-input-placeholder {
+            color: $brand-danger;
+        }
+    }
+}
+
+.form-submission {
+    min-height: 300px;
+}
+
+.content {
+    min-height: 450px;
+}
+
+.img-full {
+    width: 100%;
+    display: block;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.mt100 {
+    margin-top: -100px;
+}
+
+.bg-all {
+    background: url(../img/background.jpg) no-repeat center center;
+    background-size: cover;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    .logo-left,
+    .logo-right {
+        padding: 15px;
+        margin: 0 20px;
+        max-width: 180px;
+    }
+    .title {
+        margin-top: 20px;
+        color: #ffd92e;
+        font-size: 100px;
+        letter-spacing: 8px;
+        font-family: Budmo-Jigglish;
+        text-transform: uppercase;
+        img {
+            width: 700px;
+            margin-top: 20px;
+        }
+    }
+    .table-img {
+        margin: 60px 0;
+    }
+    .dealer-name {
+        position: absolute;
+        top: 50px;
+        left: 50%;
+        @include transform(translateX(-50%));
+        background: #b20003;
+        padding: 4px 18px 2px;
+        letter-spacing: 1px;
+        line-height: 1;
+        color: #fff;
+        font-size: 26px;
+        border: 1px solid #b20003;
+        border-radius: 8px;
+        font-family: "AvenirLTStd-Black";
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .community-cards {
+        width: 700px;
+        position: absolute;
+        top: 48%;
+        left: 50%;
+        @include transform(translate(-50%, -50%));
+    }
+    .player-number {
+        position: absolute;
+        .img-circle-player {
+            width: 80px;
+            height: 82px;
+            img {
+                position: absolute;
+            }
+        }
+        .bubble {
+            position: absolute;
+            top: -10px;
+            right: -56px;
+            background: #da0015;
+            border-radius: 60%;
+            padding: 5px 10px;
+            text-align: justify;
+            color: #fff;
+            font-size: 25px;
+            z-index: 2;
+            &:after {
+                content: '';
+                position: absolute;
+                border-style: solid;
+                border-width: 33px 6px 0;
+                border-color: #da0015 transparent;
+                display: block;
+                width: 0;
+                z-index: 0;
+                bottom: -13px;
+                left: -6px;
+                @include transform(rotate(50deg));
+            }
+        }
+        .blind-seen {
+            position: absolute;
+            bottom: 22px;
+            left: 7px;
+            border-radius: 0 0px 100px 100px;
+            padding: 12px 18px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            font-size: 20px;
+            line-height: 1;
+            z-index: 2;
+            &.blind {
+                background: #da0015;
+            }
+            &.seen {
+                background: #19328f;
+                padding: 12px 23px;
+            }
+        }
+        .fold-pack {
+            position: absolute;
+            bottom: 15px;
+            left: 7px;
+            min-width: 85px;
+            text-align: center;
+            z-index: 1;
+            @include transform(translate(-20%, 18px));
+            background: #b20003;
+            padding: 4px 9px 2px;
+            letter-spacing: 1px;
+            line-height: 1;
+            color: #fff;
+            font-size: 18px;
+            border: 1px solid #b20003;
+            border-radius: 8px;
+            font-family: "AvenirLTStd-Black";
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .number {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            @include transform(translate(-50%, -50%));
+            font-size: 42px;
+            color: #fff;
+            font-family: "AvenirLTStd-Black";
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .main-dealer {
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-style: italic;
+            background: $brand-info;
+            color: #fff;
+            text-align: center;
+            line-height: 1.6;
+            position: absolute;
+            top: 22px;
+            left: 20px;
+            z-index: 1;
+            font-family: "AvenirLTStd-Roman";
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .player-title {
+            color: #fff;
+            font-size: 20px;
+            position: absolute;
+            letter-spacing: 1px;
+        }
+        .two-cards.folddone {
+            img {
+                @include filter(grayscale(100%));
+            }
+        }
+        &.player-1 {
+            .two-cards {
+                left: 52px;
+                top: 160px;
+                @include transform(rotate(190deg));
+                .card-one.ng-hide-remove {
+                    @include transform(translate(300px, -42px) rotate(-10deg)!important);
+                }
+                .card-two.ng-hide-remove {
+                    @include transform(translate(295px, -42px) rotate(-10deg) !important);
+                }
+                .card-three.ng-hide-remove {
+                    @include transform(translate(284px, -42px) rotate(-10deg)!important);
+                }
+                .card-four.ng-hide-remove {
+                    @include transform(translate(272px, -42px) rotate(-10deg) !important);
+                }
+            }
+        }
+        &.player-2 {
+            .two-cards {
+                left: -8px;
+                top: 139px;
+                @include transform(rotate(215deg));
+                .card-one.ng-hide-remove {
+                    @include transform(translate(508px, -215px) rotate(-36deg) !important);
+                }
+                .card-two.ng-hide-remove {
+                    @include transform(translate(495px, -215px) rotate(-36deg) !important);
+                }
+                .card-three.ng-hide-remove {
+                    @include transform(translate(487px, -215px) rotate(-36deg) !important);
+                }
+                .card-four.ng-hide-remove {
+                    @include transform(translate(475px, -215px) rotate(-36deg) !important);
+                }
+            }
+        }
+        &.player-3 {
+            .two-cards {
+                .card-one.ng-hide-remove {
+                    @include transform(translate(-276px, -548px) rotate(36deg) !important);
+                }
+                .card-two.ng-hide-remove {
+                    @include transform(translate(-282px, -545px) rotate(36deg) !important);
+                }
+                .card-three.ng-hide-remove {
+                    @include transform(translate(-295px, -545px) rotate(36deg)!important);
+                }
+                .card-four.ng-hide-remove {
+                    @include transform(translate(-302px, -545px) rotate(36deg) !important);
+                }
+            }
+        }
+        &.player-4 {
+            .two-cards {
+                .card-one.ng-hide-remove {
+                    @include transform(translate(-275px, -410px) rotate(2deg)!important);
+                }
+                .card-two.ng-hide-remove {
+                    @include transform(translate(-270px, -410px) rotate(2deg)!important);
+                }
+                .card-three.ng-hide-remove {
+                    @include transform(translate(-285px, -411px) rotate(2deg)!important);
+                }
+                .card-four.ng-hide-remove {
+                    @include transform(translate(-295px, -410px) rotate(2deg)!important);
+                }
+            }
+        }
+        &.player-5 {
+            .two-cards {
+                .card-one.ng-hide-remove {
+                    @include transform(translate(310px, -411px) rotate(0deg)!important);
+                }
+                .card-two.ng-hide-remove {
+                    @include transform(translate(300px, -411px) rotate(2deg)!important);
+                }
+                .card-three.ng-hide-remove {
+                    @include transform(translate(290px, -411px) rotate(2deg)!important);
+                }
+                .card-four.ng-hide-remove {
+                    @include transform(translate(280px, -411px) rotate(2deg)!important);
+                }
+            }
+        }
+        &.player-6 {
+            .two-cards {
+                .card-one.ng-hide-remove {
+                    @include transform(translate(326px, -522px) rotate(-29deg) !important);
+                }
+                .card-two.ng-hide-remove {
+                    @include transform(translate(320px, -522px) rotate(-29deg) !important);
+                }
+                .card-three.ng-hide-remove {
+                    @include transform(translate(310px, -522px) rotate(-29deg)!important);
+                }
+                .card-four.ng-hide-remove {
+                    @include transform(translate(300px, -522px) rotate(-29deg) !important);
+                }
+            }
+        }
+        &.player-7 {
+            .two-cards {
+                right: -50px;
+                top: 115px;
+                @include transform(rotate(140deg));
+                .card-one.ng-hide-remove {
+                    @include transform(translate(-478px, -250px) rotate(40deg)!important);
+                }
+                .card-two.ng-hide-remove {
+                    @include transform(translate(-492px, -250px) rotate(40deg)!important);
+                }
+                .card-three.ng-hide-remove {
+                    @include transform(translate(-498px, -250px) rotate(40deg)!important);
+                }
+                .card-four.ng-hide-remove {
+                    @include transform(translate(-510px, -250px) rotate(40deg)!important);
+                }
+            }
+        }
+        &.player-8 {
+            .two-cards {
+                right: -0px;
+                top: 150px;
+                @include transform(rotate(-190deg));
+                .card-one.ng-hide-remove {
+                    @include transform(translate(-288px, -44px) rotate(10deg)!important);
+                }
+                .card-two.ng-hide-remove {
+                    @include transform(translate(-300px, -44px) rotate(10deg)!important);
+                }
+                .card-three.ng-hide-remove {
+                    @include transform(translate(-312px, -44px) rotate(10deg)!important);
+                }
+                .card-four.ng-hide-remove {
+                    @include transform(translate(-320px, -44px) rotate(10deg)!important);
+                }
+            }
+        }
+        &.player-3 {
+            .two-cards {
+                bottom: 125px;
+                left: -40px;
+                @include transform(translateX(-50%) rotate(-35deg));
+            }
+        }
+        &.player-4,
+        &.player-5 {
+            .two-cards {
+                bottom: 160px;
+                left: 15px;
+                @include transform(translateX(-50%) rotate(0deg));
+            }
+        }
+        &.player-6 {
+            .two-cards {
+                bottom: 150px;
+                right: 0;
+                @include transform(translateX(-50%) rotate(30deg));
+            }
+        }
+        &.player-1,
+        &.player-7,
+        &.player-2,
+        &.player-8 {
+            top: 3%;
+            .fold-pack {
+                @include transform(translate(-20%, 18px)rotate(180deg));
+            }
+        }
+        &.player-3,
+        &.player-6 {
+            bottom: 24%
+        }
+        &.player-8 {
+            left: 25%;
+        }
+        &.player-1 {
+            right: 25%;
+        }
+        &.player-2,
+        &.player-7 {
+            top: 20%;
+        }
+        &.player-2,
+        &.player-3 {
+            right: 7%;
+        }
+        &.player-7,
+        &.player-6 {
+            left: 7%;
+        }
+        &.player-4,
+        &.player-5 {
+            bottom: 6%;
+        }
+        &.player-5 {
+            left: 28%;
+        }
+        &.player-4 {
+            right: 28%;
+        }
+        &.dealer {
+            top: -40px;
+            left: 50%;
+            @include transform(translateX(-50%));
+        }
+    }
+    .two-cards {
+        position: absolute;
+        .card-two,
+        .card-one,
+        .card-three,
+        .card-four {
+            position: absolute;
+            top: -35px;
+            box-shadow: -2px 2px 3px rgba(0, 0, 0, 0.7);
+        }
+        .card-one {
+            left: 0px;
+            transform: rotate(00deg);
+        }
+        .card-two {
+            left: 10px;
+            transform: rotate(10deg);
+        }
+        .card-three {
+            left: 20px;
+            transform: rotate(20deg);
+        }
+        .card-four {
+            left: 30px;
+            transform: rotate(30deg);
+        }
+    }
+    .table-score {
+        width: 390px;
+        padding-left: 30px;
+        position: absolute;
+        bottom: 45px;
+        right: 30px;
+        .table-score-count {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 30px;
+            font-size: 24px;
+            font-family: "AvenirLTStd-Black";
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            label {
+                padding: 0;
+                margin: 0;
+            }
+            .m0 {
+                margin: 0;
+            }
+            .pad-0 {
+                padding: 0;
+            }
+            .row {
+                padding: 4px 0;
+            }
+            .row+.row {
+                border-top: 1px solid #000;
+            }
+        }
+    }
+}
+
+.footer {
+    color: #ffd82e;
+    font-size: 16px;
+    position: fixed;
+    bottom: 50px;
+    left: 50px;
+    .wohlig {
+        color: #ffd82e;
+        font-family: "AvenirLTStd-Black";
+    }
+}
+
+.card-one,
+.card-two,
+.card-three,
+.card-four {
+    @include transition(0.5s linear all !important);
+}
+
+.card-one.ng-hide-remove.ng-hide-remove-active {
+    @include transform(translate(0, 0) !important);
+}
+
+.card-two.ng-hide-remove.ng-hide-remove-active {
+    @include transform(translate(0, 0) !important);
+}
+
+.card-three.ng-hide-remove.ng-hide-remove-active {
+    @include transform(translate(0, 0) !important);
+}
+
+.card-four.ng-hide-remove.ng-hide-remove-active {
+    @include transform(translate(0, 0) !important);
+}
+
+.pack-cards {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    @include transform(translateX(-50%));
+    -webkit-box-shadow: -2px 2px 3px rgba(0, 0, 0, 0.7);
+    box-shadow: -2px 2px 3px rgba(0, 0, 0, 0.7);
+}
+
+//winner modal
+.winner-modal {
+    padding-top: 2%;
+    .modal-lg {
+        width: 1580px;
+        margin: 15px auto;
+    }
+    .modal-content {
+        background-color: transparent;
+        border-color: transparent;
+        border-radius: 0px;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+    .img-winner-holder {
+        min-height: 180px;
+        margin-bottom: 20px;
+        &.winner-only-one {
+            margin-top: 20%;
+            position: relative;
+            .img-winner-card {
+                width: 155px;
+                top: -20px;
+                left: 15%;
+            }
+            .player-card {
+                top: 10px;
+                right: 115px;
+                span {
+                    font-size: 35px;
+                }
+            }
+            .bubble {
+                top: -65px;
+                left: 255px;
+                font-size: 20px;
+            }
+        }
+        .player-card {
+            position: absolute;
+            top: 10px;
+            right: 130px;
+            z-index: 4;
+            span {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                @include transform(translate(-50%, -50%));
+                font-size: 48px;
+                color: #fff;
+                font-family: "AvenirLTStd-Black";
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+        .img-winner-card {
+            width: 150px;
+            position: absolute;
+            top: -10px;
+            left: 14%;
+            .winner-card-two {
+                position: absolute;
+                top: 5px;
+                left: 35px;
+                @include transform(rotate(10deg));
+            }
+            .winner-card-three {
+                position: absolute;
+                top: 0;
+                left: 65px;
+                @include transform(rotate(20deg));
+            }
+        }
+        .bubble {
+            position: absolute;
+            top: -55px;
+            left: 260px;
+            background: #da0015;
+            border-radius: 55%;
+            padding: 20px 30px;
+            text-align: justify;
+            color: #fff;
+            font-size: 20px;
+            z-index: 2;
+            &:after {
+                content: '';
+                position: absolute;
+                border-style: solid;
+                border-width: 35px 9px 0;
+                border-color: #da0015 transparent;
+                display: block;
+                width: 0;
+                z-index: 0;
+                bottom: -1px;
+                left: -1px;
+                @include transform(rotate(50deg));
+            }
+        }
+    }
+    .title-winner {
+        color: #ffd92e;
+        font-size: 70px;
+        font-family: "AvenirLTStd-Black";
+        text-align: center;
+        text-transform: uppercase;
+        line-height: 1;
+    }
+}
+
+.mt-70 {
+    margin-top: 70px;
+}
+
+.community-cards {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.modal-backdrop.in {
+    opacity: 0.9;
+}
+
+.bg-blue {
+    background: $brand-info !important;
+    border-color: $brand-info !important;
+}
+
+.bubble-check {
+    background: $brand-primary !important;
+    &:after {
+        border-color: $brand-primary transparent !important;
+    }
+}
+
+.community-image h4 {
+    font-size: 20px;
+    color: #fff;
+    font-family: "AvenirLTStd-Black";
+    letter-spacing: 2px;
+    margin: 0;
+}

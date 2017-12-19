@@ -1,8 +1,9 @@
 module.exports = function (grunt) {
     var folderName = grunt.option('target');
     var productionString = "";
+    var jsFiles;
     if (folderName) {
-        var jsFiles = require("../../" + folderName + "/files.js");
+        jsFiles = require("../../" + folderName + "/files.js");
     }
     var env = false;
     var isProduction = grunt.option('production');

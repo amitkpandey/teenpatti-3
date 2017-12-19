@@ -644,7 +644,7 @@ a,
             width: 150px;
             position: absolute;
             top: -10px;
-            left: 14%;
+            left: 10%;
             .winner-card-two {
                 position: absolute;
                 top: 5px;
@@ -657,11 +657,17 @@ a,
                 left: 65px;
                 @include transform(rotate(20deg));
             }
+            .winner-card-four {
+                position: absolute;
+                top: 10px;
+                left: 95px;
+                @include transform(rotate(30deg));
+            }
         }
         .bubble {
             position: absolute;
             top: -55px;
-            left: 260px;
+            left: 240px;
             background: #da0015;
             border-radius: 55%;
             padding: 20px 30px;

@@ -811,19 +811,19 @@ var model = {
         });
     },
     blastSocketWinner: function (data) {
-        var newWinner = _.filter(data.winners, function (n) {
-            return n.winner;
-        });
-        var finalWinner = _.map(newWinner, function (n) {
-            var obj = {
-                cards: n.cards,
-                descr: n.descr,
-                playerNo: n.playerNo
-            };
-            return obj;
-        });
+        // var newWinner = _.filter(data.winners, function (n) {
+        //     return n.winner;
+        // });
+        // var finalWinner = _.map(newWinner, function (n) {
+        //     var obj = {
+        //         cards: n.cards,
+        //         descr: n.descr,
+        //         playerNo: n.playerNo
+        //     };
+        //     return obj;
+        // });
         sails.sockets.blast("showWinner", {
-            data: finalWinner
+            data: data
         });
     },
     allIn: function (data, callback) {

@@ -762,12 +762,20 @@ var model = {
         }
 
     },
-    makeSeen: function (callback) {
+    makeSeen: function (data, callback) {
         var Model = this;
+        var cond = {};
+        if (data.playerId) {
+            cond = {
+                playerNo: data.playerId
+            }
+        } else {
+            cond = {
+                isTurn: true
+            }
+        }
         console.log("Inside the makeSeen");
-        Model.findOneAndUpdate({
-            isTurn: true
-        }, {
+        Model.findOneAndUpdate(cond, {
             $set: {
                 isBlind: false
             }

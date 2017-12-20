@@ -59,7 +59,7 @@ var controller = {
         Player.changeTurn(res.callback);
     },
     makeSeen: function (req, res) {
-        Player.makeSeen(res.callback);
+        Player.makeSeen(req.body, res.callback);
     },
     doSideShow: function (req, res) {
         Player.doSideShow(res.callback);

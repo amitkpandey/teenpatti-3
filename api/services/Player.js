@@ -765,7 +765,7 @@ var model = {
     makeSeen: function (data, callback) {
         var Model = this;
         var cond = {};
-        if (data.playerId) {
+        if (data.playerNo) {
             cond = {
                 playerNo: data.playerNo
             }

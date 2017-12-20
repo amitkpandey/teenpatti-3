@@ -767,7 +767,7 @@ var model = {
         var cond = {};
         if (data.playerId) {
             cond = {
-                playerNo: data.playerId
+                playerNo: data.playerNo
             }
         } else {
             cond = {

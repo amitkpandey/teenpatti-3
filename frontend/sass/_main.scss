@@ -601,34 +601,35 @@ a,
     }
     .img-winner-holder {
         min-height: 180px;
-        margin-bottom: 70px;
+        margin-bottom: 20px;
         &.winner-only-one {
-            margin-top: 20%;
+            margin-top: 15%;
             position: relative;
             .img-winner-card {
-                width: 155px;
-                top: -20px;
-                left: 15%;
+                width: 150px;
+                top: -10px;
+                left: 10%;
             }
             .player-card {
                 top: 10px;
                 right: 115px;
                 span {
-                    font-size: 35px;
+                    font-size: 45px;
                 }
             }
             .bubble {
-                top: -65px;
-                left: 255px;
+                top: -75px;
+                left: 190px;
                 font-size: 20px;
             }
         }
         .rank {
             position: absolute;
-            font-size: 49px;
+            font-size: 55px;
             color: #fff;
-            bottom: 85px;
-            right: 110px;
+            bottom: 82px;
+            right: 115px;
+            letter-spacing: -5px;
             vertical-align: middle;
             font-family: "AvenirLTStd-Black";
             -webkit-font-smoothing: antialiased;
@@ -636,15 +637,15 @@ a,
         }
         .player-card {
             position: absolute;
-            top: 10px;
-            right: 130px;
+            top: 5px;
+            right: 88px;
             z-index: 4;
             span {
                 position: absolute;
-                top: 50%;
-                left: 50%;
+                top: 53%;
+                left: 49%;
                 @include transform(translate(-50%, -50%));
-                font-size: 48px;
+                font-size: 26px;
                 color: #fff;
                 font-family: "AvenirLTStd-Black";
                 -webkit-font-smoothing: antialiased;
@@ -652,39 +653,39 @@ a,
             }
         }
         .img-winner-card {
-            width: 150px;
+            width: 94px;
             position: absolute;
-            top: -10px;
+            top: 0px;
             left: 10%;
             .winner-card-two {
                 position: absolute;
                 top: 5px;
-                left: 35px;
+                left: 25px;
                 @include transform(rotate(10deg));
             }
             .winner-card-three {
                 position: absolute;
-                top: 0;
-                left: 65px;
+                top: 7px;
+                left: 45px;
                 @include transform(rotate(20deg));
             }
             .winner-card-four {
                 position: absolute;
                 top: 10px;
-                left: 95px;
+                left: 65px;
                 @include transform(rotate(30deg));
             }
         }
         .bubble {
             position: absolute;
-            top: -55px;
-            left: 240px;
+            top: -52px;
+            left: 150px;
             background: #da0015;
             border-radius: 55%;
-            padding: 20px 30px;
+            padding: 20px 40px;
             text-align: justify;
             color: #fff;
-            font-size: 20px;
+            font-size: 18px;
             z-index: 2;
             &:after {
                 content: '';

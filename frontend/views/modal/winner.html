@@ -1,38 +1,31 @@
 <div class="row">
     <!--<pre>{{winner.length}}</pre>-->
     <div class="col-md-12">
-        <div class="title-winner" ng-if="winner.length > 1">
-            <!--<img src="img/split-pot.png" alt="" width="500px">-->
-            Split pot - Winner - Player <span ng-repeat="winners in winner" ng-if="winners.winner == true"> {{winners.playerNo}}</span>
-        </div>
-        <div class="title-winner text-center" ng-if="winner.length==1">
+        <div class="title-winner text-center">
             Winner - <span ng-repeat="winners in winner" ng-if="winners.winner == true">Player {{winners.playerNo}}</span>
         </div>
-
     </div>
     <div class="col-md-12">
         <div class="row">
-            <div class="mt-70">
-                <div class="col-md-6" ng-repeat="winners in winner" ng-if="winners.winner == true">
-                    <div class="img-winner-holder">
-                        <div class="bubble">
-                            {{winners.detail.desc}}
-                        </div>
-                        <img src="img/winner.png" alt="" class="img-full">
-                        <div class="player-card">
-                            <img src="img/circle-icon.png" alt="" width="75">
-                            <span>{{winners.playerNo}}</span>
-                        </div>
-                        <div class="img-winner-card">
-                            <card card='{{winners.cards[0]}}' ng-style="style" class="img-full">
-                            </card>
-                            <card card='{{winners.cards[1]}}' ng-style="style" class="img-full winner-card-two">
-                            </card>
-                            <card card='{{winners.cards[2]}}' ng-style="style" class="img-full winner-card-three">
-                            </card>
-                            <card card='{{winners.cards[3]}}' ng-style="style" class="img-full winner-card-four">
-                            </card>
-                        </div>
+            <div class="col-md-6" ng-repeat="winners in winner" ng-if="winners.winner == true">
+                <div class="img-winner-holder winner-only-one">
+                    <div class="bubble">
+                        {{winners.detail.desc}}
+                    </div>
+                    <img src="img/winner.png" alt="" class="img-full">
+                    <div class="player-card">
+                        <img src="img/circle-icon.png" alt="" width="75">
+                        <span>{{winners.playerNo}}</span>
+                    </div>
+                    <div class="img-winner-card">
+                        <card card='{{winners.cards[0]}}' ng-style="style" class="img-full">
+                        </card>
+                        <card card='{{winners.cards[1]}}' ng-style="style" class="img-full winner-card-two">
+                        </card>
+                        <card card='{{winners.cards[2]}}' ng-style="style" class="img-full winner-card-three">
+                        </card>
+                        <card card='{{winners.cards[3]}}' ng-style="style" class="img-full winner-card-four">
+                        </card>
                     </div>
                 </div>
             </div>
@@ -53,19 +46,19 @@
 </div>
 <div class="title-winner text-winner-other text-center" ng-if="!(winner.winner)">
     Other Player
-</div>  
-<div class="row">   
+</div>
+<div class="row">
     <div class="col-md-12">
         <div class="row">
             <div class="mt-70">
-                <div class="col-md-6" ng-repeat="winners in winner" ng-if="winners.winRank > 1">
+                <div class="col-md-4" ng-repeat="winners in winner" ng-if="winners.winRank > 1">
                     <div class="img-winner-holder">
                         <div class="bubble">
                             {{winners.detail.desc}}
                         </div>
                         <img src="img/other.png" alt="" class="img-full">
                         <div class="player-card">
-                            <img src="img/circle-icon.png" alt="" width="75">
+                            <img src="img/circle-icon.png" alt="" width="50">
                             <span>{{winners.playerNo}}</span>
                         </div>
                         <div class="rank"> - {{winners.winRank}}</div>

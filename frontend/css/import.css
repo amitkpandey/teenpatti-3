@@ -10535,7 +10535,7 @@ a,
     box-shadow: none; }
   .winner-modal .img-winner-holder {
     min-height: 180px;
-    margin-bottom: 20px; }
+    margin-bottom: 70px; }
     .winner-modal .img-winner-holder.winner-only-one {
       margin-top: 20%;
       position: relative; }
@@ -10552,6 +10552,16 @@ a,
         top: -65px;
         left: 255px;
         font-size: 20px; }
+    .winner-modal .img-winner-holder .rank {
+      position: absolute;
+      font-size: 49px;
+      color: #fff;
+      bottom: 85px;
+      right: 110px;
+      vertical-align: middle;
+      font-family: "AvenirLTStd-Black";
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale; }
     .winner-modal .img-winner-holder .player-card {
       position: absolute;
       top: 10px;
@@ -10622,6 +10632,9 @@ a,
     text-align: center;
     text-transform: uppercase;
     line-height: 1; }
+    .winner-modal .title-winner.text-winner-other {
+      color: #fff;
+      font-size: 40px; }
 
 .mt-70 {
   margin-top: 70px; }

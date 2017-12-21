@@ -65,7 +65,8 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         if (winnerPopup) {
             winnerPopup.close();
         }
-        $scope.winner = data.data;
+        $scope.winner = data.data.winners;
+        console.log($scope.winner);
         winnerPopup = $uibModal.open({
             templateUrl: "views/modal/winner.html",
             size: "lg",

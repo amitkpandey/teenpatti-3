@@ -18,13 +18,13 @@
                         <span>{{winners.playerNo}}</span>
                     </div>
                     <div class="img-winner-card">
-                        <card card='{{winners.cards[0]}}' ng-style="style" class="img-full">
+                        <card card='{{winners.cards[0]}}' ng-style="style" class="img-full" ng-if="winners.cards[0]">
                         </card>
-                        <card card='{{winners.cards[1]}}' ng-style="style" class="img-full winner-card-two">
+                        <card card='{{winners.cards[1]}}' ng-style="style" class="img-full winner-card-two" ng-if="winners.cards[1]">
                         </card>
-                        <card card='{{winners.cards[2]}}' ng-style="style" class="img-full winner-card-three">
+                        <card card='{{winners.cards[2]}}' ng-style="style" class="img-full winner-card-three" ng-if="winners.cards[2]">
                         </card>
-                        <card card='{{winners.cards[3]}}' ng-style="style" class="img-full winner-card-four">
+                        <card card='{{winners.cards[3]}}' ng-style="style" class="img-full winner-card-four" ng-if="winners.cards[3]">
                         </card>
                     </div>
                 </div>
@@ -63,13 +63,13 @@
                         </div>
                         <div class="rank"> - {{winners.winRank}}</div>
                         <div class="img-winner-card">
-                            <card card='{{winners.cards[0]}}' ng-style="style" class="img-full">
+                            <card card='{{winners.cards[0]}}' ng-style="style" class="img-full" ng-if="winners.cards[0]">
                             </card>
-                            <card card='{{winners.cards[1]}}' ng-style="style" class="img-full winner-card-two">
+                            <card card='{{winners.cards[1]}}' ng-style="style" class="img-full winner-card-two" ng-if="winners.cards[1]">
                             </card>
-                            <card card='{{winners.cards[2]}}' ng-style="style" class="img-full winner-card-three">
+                            <card card='{{winners.cards[2]}}' ng-style="style" class="img-full winner-card-three" ng-if="winners.cards[2]">
                             </card>
-                            <card card='{{winners.cards[3]}}' ng-style="style" class="img-full winner-card-four">
+                            <card card='{{winners.cards[3]}}' ng-style="style" class="img-full winner-card-four" ng-if="winners.cards[3]">
                             </card>
                         </div>
                     </div>

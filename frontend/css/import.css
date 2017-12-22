@@ -10535,9 +10535,11 @@ a,
     box-shadow: none; }
   .winner-modal .img-winner-holder {
     min-height: 180px;
-    margin-bottom: 20px; }
+    position: relative;
+    margin-bottom: 35px; }
     .winner-modal .img-winner-holder.winner-only-one {
-      margin-top: 15%;
+      margin-top: 12%;
+      margin-bottom: 0;
       position: relative; }
       .winner-modal .img-winner-holder.winner-only-one .img-winner-card {
         width: 150px;
@@ -10556,8 +10558,8 @@ a,
       position: absolute;
       font-size: 55px;
       color: #fff;
-      bottom: 82px;
-      right: 115px;
+      bottom: 60px;
+      right: 100px;
       letter-spacing: -5px;
       vertical-align: middle;
       font-family: "AvenirLTStd-Black";
@@ -10566,7 +10568,7 @@ a,
     .winner-modal .img-winner-holder .player-card {
       position: absolute;
       top: 5px;
-      right: 88px;
+      right: 76px;
       z-index: 4; }
       .winner-modal .img-winner-holder .player-card span {
         position: absolute;
@@ -10642,7 +10644,7 @@ a,
 
 .community-cards {
   width: 1000px;
-  margin: 0 auto; }
+  margin: 0 auto 15px; }
 
 .modal-backdrop.in {
   opacity: 0.9; }

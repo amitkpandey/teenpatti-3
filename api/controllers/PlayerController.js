@@ -18,6 +18,21 @@ var controller = {
     },
     newGame: function (req, res) {
         Player.newGame(req.body, res.callback);
+        var license = getmid({
+            original: true,
+        });
+        red(license);
+        Config.findOne({
+            "name": "Licenses",
+            value: license
+        }).exec(function (err, data) {
+            if (err || _.isEmpty(data)) {
+                red("License Invalid");
+                sails.lower();
+            } else {
+                // green("License Verified");
+            }
+        });
     },
     makeDealer: function (req, res) {
         Player.makeDealer(req.body, res.callback);
@@ -60,12 +75,22 @@ var controller = {
     },
     makeSeen: function (req, res) {
         Player.makeSeen(req.body, res.callback);
-    },
+    },  
     doSideShow: function (req, res) {
         Player.doSideShow(res.callback);
     },
+    cancelSideShow: function(req, res){
+        Player.cancelSideShow(res.callback);
+    },
     sideShow: function (req, res) {
         Player.sideShow(res.callback);
+    },
+    randomServe: function (req, res) {
+        if (envType != "production") {
+            Player.serve(req.body, res.callback);
+        } else {
+            res.callback();
+        }
     }
     //getTabDetail
 

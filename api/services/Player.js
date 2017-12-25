@@ -276,6 +276,13 @@ var model = {
                         }
                     }
                 );
+            },
+            sideShows: function (callback) {
+                SideShow.find({}, {
+                    fromPlayerNo: 1,
+                    toPlayerNo: 1,
+                    winner: 1
+                }).lean().exec(callback);
             }
         }, function (err, data) {
             if (err) {
@@ -294,7 +301,8 @@ var model = {
                         });
                         callback(null, {
                             winners: data.players,
-                            gameType: data.currentGameType
+                            gameType: data.currentGameType,
+                            sideShows: data.sideShows
                             //communityCards: data.communityCards
                         });
                     }
@@ -415,7 +423,9 @@ var model = {
                     fwCallback(err, cards);
                 });
             },
-
+            function(arg1, callback){
+               SideShow.remove({},callback);
+            },
             function (arg1, fwCallback) {
                 Setting.update({
                     name: "turnLimit"
@@ -810,6 +820,19 @@ var model = {
             data: data
         });
     },
+    cancelSideShow: function (callback) {
+        async.waterfall([Player.currentTurn,
+            function (player, callback) {
+                sails.sockets.blast("sideShowCancel", {
+                    data: player
+                });
+                callback();
+            },
+            Player.changeTurn
+        ], function (err, data) {
+            callback(err, data);
+        });
+    },
     blastSocketWinner: function (data) {
         // var newWinner = _.filter(data.winners, function (n) {
         //     return n.winner;
@@ -907,43 +930,94 @@ var model = {
                                     var looseIndex = _.findIndex(finalData, function (value) {
                                         return (value.winRank == 2);
                                     });
-
-                                    var turnIndex = _.findIndex(finalData, function (value) {
+                                     
+                                    var turnIndex1 = _.findIndex(finalData, function (value) {
                                         return value.isTurn;
                                     });
 
                                     if (looseIndex >= 0) {
-                                        if (looseIndex == turnIndex) {
-                                            //console.log("Loose index is equal to turn index", looseIndex, turnIndex);
-                                            Player.fold({}, function (err, data) {
+                                        if (looseIndex == turnIndex1) {
+                                            console.log("Loose index is equal to turn index", looseIndex, turnIndex1, winnerData);
+                                            async.parallel([
+                                                Player.fold,
+                                                function (callback) {
+                                                    var sideShowData = {};
+                                                    sideShowData.fromPlayerNo = players[turnIndex].playerNo;
+                                                    sideShowData.toPlayerNo = players[nextPlayer].playerNo;
+                                                    sideShowData.winner = finalData;
+                                                    SideShow.saveData(sideShowData, callback);
+                                                }
+
+                                            ], function (err, data) {
                                                 if (err) {
                                                     callback(err);
                                                 } else {
-                                                    Player.blastSocket();
-                                                    callback();
-                                                    return 0;
+                                                    GameLogs.create(function () {
+                                                        Player.blastSocket();
+                                                        //callback();
+                                                        return 0;
+                                                    });
+
                                                 }
                                             });
+
                                         } else {
-                                            // console.log("inside the condition");
+                                             console.log("inside the condition");
                                             async.waterfall([
                                                     Player.changeTurn,
-                                                    Player.fold
+                                                    Player.fold,
+                                                    function (data, callback) {
+                                                        var sideShowData = {};
+                                                        sideShowData.fromPlayerNo = players[turnIndex].playerNo;
+                                                        sideShowData.toPlayerNo = players[nextPlayer].playerNo;
+                                                        sideShowData.winner = finalData;
+                                                        console.log(sideShowData);
+                                                        //console.log(callback);
+                                                        SideShow.saveData(sideShowData, function (err, data) {
+                                                            callback(err);
+                                                        });
+                                                    }
+                                                   
+
                                                 ],
                                                 function (err, data) {
                                                     if (err) {
                                                         callback(err);
                                                     } else {
-                                                        Player.blastSocket();
-                                                        callback();
-                                                        return 0;
+                                                        GameLogs.create(function () {
+                                                            console.log("inside the condition.........");
+                                                          //  Player.blastSocket({},true);
+                                                            //callback();
+                                                            return 0;
+                                                        }, 3);
                                                     }
                                                 });
                                         }
                                     } else {
-                                        Player.changeTurn(function (err, data) {
-                                            callback(err, "Split Pot");
+                                        sync.parallel([
+                                            Player.changeTurn,
+                                            function (callback) {
+                                                var sideShowData = {};
+                                                sideShowData.fromPlayerNo = players[turnIndex].playerNo;
+                                                sideShowData.toPlayerNo = players[nextPlayer].playerNo;
+                                                sideShowData.winner = finalData;
+                                                console.log(sideShowData);
+                                                SideShow.saveData(sideShowData, callback);
+                                            }
+
+                                        ], function (err, data) {
+                                            if (err) {
+                                                callback(err);
+                                            } else {
+                                                GameLogs.create(function () {
+                                                    Player.blastSocket();
+                                                   // callback();
+                                                    return 0;
+                                                });
+
+                                            }
                                         });
+
                                     }
                                 }
                                 // winnerData

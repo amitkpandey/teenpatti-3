@@ -296,7 +296,8 @@ var model = {
                         console.log("data.players", data.players);
                         Player.blastSocketWinner({
                             winners: data.players,
-                            gameType: data.currentGameType
+                            gameType: data.currentGameType,
+                            sideShows: data.sideShows
                             // communityCards: data.communityCards
                         });
                         callback(null, {
@@ -987,7 +988,7 @@ var model = {
                                                         GameLogs.create(function () {
                                                             console.log("inside the condition.........");
                                                           //  Player.blastSocket({},true);
-                                                            //callback();
+                                                           // callback();
                                                             return 0;
                                                         }, 3);
                                                     }

@@ -10199,13 +10199,13 @@ a,
       bottom: 22px;
       left: 7px;
       border-radius: 0 0px 100px 100px;
-      padding: 12px 18px;
+      padding: 10px 19px 10px;
       text-align: center;
       text-transform: uppercase;
       letter-spacing: 2px;
       color: #fff;
       font-size: 20px;
-      line-height: 1;
+      line-height: 1.5;
       z-index: 2; }
       .bg-all .player-number .blind-seen.blind {
         background: #da0015; }
@@ -10426,6 +10426,10 @@ a,
       left: 50%;
       -webkit-transform: translateX(-50%);
       transform: translateX(-50%); }
+    .bg-all .player-number.disable .blind-seen.blind {
+      background: #e2dac0;
+      color: #e2dac0;
+      opacity: 0.8; }
   .bg-all .two-cards {
     position: absolute; }
     .bg-all .two-cards .card-two,
@@ -10644,7 +10648,7 @@ a,
 
 .community-cards {
   width: 1000px;
-  margin: 0 auto 15px; }
+  margin: 0 auto 30px; }
 
 .modal-backdrop.in {
   opacity: 0.9; }
@@ -10659,7 +10663,7 @@ a,
     border-color: #0d9dff transparent !important; }
 
 .community-image h4 {
-  font-size: 20px;
+  font-size: 22px;
   color: #fff;
   font-family: "AvenirLTStd-Black";
   letter-spacing: 2px;

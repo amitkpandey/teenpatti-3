@@ -194,13 +194,13 @@ a,
             bottom: 22px;
             left: 7px;
             border-radius: 0 0px 100px 100px;
-            padding: 12px 18px;
+            padding: 10px 19px 10px;
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #fff;
             font-size: 20px;
-            line-height: 1;
+            line-height: 1.5;
             z-index: 2;
             &.blind {
                 background: #da0015;
@@ -477,6 +477,13 @@ a,
             left: 50%;
             @include transform(translateX(-50%));
         }
+        &.disable {
+            .blind-seen.blind {
+                background: #e2dac0;
+                color: #e2dac0;
+                opacity: 0.8;
+            }
+        }
     }
     .two-cards {
         position: absolute;
@@ -605,7 +612,7 @@ a,
         margin-bottom: 35px;
         &.winner-only-one {
             margin-top: 12%;
-            margin-bottom: 0;  
+            margin-bottom: 0;
             position: relative;
             .img-winner-card {
                 width: 150px;
@@ -724,7 +731,7 @@ a,
 
 .community-cards {
     width: 1000px;
-    margin: 0 auto 15px;
+    margin: 0 auto 30px;
 }
 
 .modal-backdrop.in {
@@ -744,7 +751,7 @@ a,
 }
 
 .community-image h4 {
-    font-size: 20px;
+    font-size: 22px;
     color: #fff;
     font-family: "AvenirLTStd-Black";
     letter-spacing: 2px;

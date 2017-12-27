@@ -1,7 +1,7 @@
-<div class="player-{{player.playerNo}} player-number" ng-disabled="true">
+<div class="player-{{player.playerNo}} player-number" ng-disabled="true" ng-class="{'disable':!player.isActive || player.isFold}">
     <div class="img-circle-player">
         <img src="img/circle-icon.png" alt="" width="120" ng-show="player.isActive" ng-class="{'enable-turn':player.isTurn}">
-        <img src="img/disable-icon.png" alt="" width="120" class="disable-player" ng-show="!player.isActive">
+        <img src="img/disable-icon.png" alt="" width="120" class="disable-player" ng-show="!player.isActive || player.isFold">
     </div>
     <div class="main-dealer text-uppercase" ng-show="player.isDealer">D</div>
     <div class="blind-seen blind" ng-if="player.isBlind">
@@ -13,19 +13,9 @@
     <div class="bubble bubble-check bg-blue" ng-show="player.hasCalled">
         Chaal
     </div>
-    <!--<div class="bubble" ng-show="player.hasRaisedd && !player.isAllIn">
-        Raise
-    </div>
-    <div class="bubble bubble-check bg-blue" ng-show="player.hasCalled">
-        Call
-    </div>
-    <div class="bubble bubble-check bg-blue" ng-show="player.hasChecked">
-        Check
-    </div>-->
     <div class="number">
         {{player.playerNo}}
     </div>
-    <!-- <div class="player-title text-uppercase">Player</div> -->
     <div class="two-cards" ng-class="{'folddone':player.isFold}">
         <div class="fold-active fold-pack text-uppercase" ng-show="player.isFold">
             Fold

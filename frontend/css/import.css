@@ -10607,6 +10607,8 @@ a,
       background: #e2dac0;
       color: #e2dac0;
       opacity: 0.8; }
+    .bg-all .player-number.disable .number {
+      color: #787878; }
   .bg-all .two-cards {
     position: absolute; }
     .bg-all .two-cards .card-two,
@@ -10941,5 +10943,3 @@ a,
     height: 130px; }
   .bg-all .pack-cards {
     top: 150px; } }
-
-/*# sourceMappingURL=import.css.map */

@@ -10243,10 +10243,10 @@ a,
         transform: rotate(50deg); }
     .bg-all .player-number .blind-seen {
       position: absolute;
-      bottom: 22px;
-      left: 7px;
-      border-radius: 0 0px 100px 100px;
-      padding: 10px 19px;
+      bottom: 7px;
+      left: 1px;
+      border-radius: 0 0 100px 100px;
+      padding: 14px 25px;
       text-align: center;
       text-transform: uppercase;
       letter-spacing: 2px;
@@ -10292,8 +10292,8 @@ a,
       -ms-transform: translate(-50%, -50%);
       -o-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
-      font-size: 42px;
-      color: #fff;
+      font-size: 52px;
+      color: #000;
       font-family: "AvenirLTStd-Black";
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale; }
@@ -10307,8 +10307,8 @@ a,
       text-align: center;
       line-height: 1.6;
       position: absolute;
-      top: 22px;
-      left: 20px;
+      top: 0;
+      right: 0;
       z-index: 1;
       font-family: "AvenirLTStd-Roman";
       -webkit-font-smoothing: antialiased;
@@ -10743,11 +10743,11 @@ a,
         top: 10px;
         right: 115px; }
         .winner-modal .img-winner-holder.winner-only-one .player-card span {
-          font-size: 45px; }
+          font-size: 55px; }
       .winner-modal .img-winner-holder.winner-only-one .bubble {
         top: -75px;
         left: 190px;
-        font-size: 20px; }
+        font-size: 28px; }
     .winner-modal .img-winner-holder .rank {
       position: absolute;
       font-size: 55px;
@@ -10766,15 +10766,15 @@ a,
       z-index: 4; }
       .winner-modal .img-winner-holder .player-card span {
         position: absolute;
-        top: 53%;
+        top: 58%;
         left: 49%;
         -webkit-transform: translate(-50%, -50%);
         -moz-transform: translate(-50%, -50%);
         -ms-transform: translate(-50%, -50%);
         -o-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
-        font-size: 26px;
-        color: #fff;
+        font-size: 38px;
+        color: #000;
         font-family: "AvenirLTStd-Black";
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale; }
@@ -10819,7 +10819,7 @@ a,
       padding: 20px 40px;
       text-align: justify;
       color: #fff;
-      font-size: 18px;
+      font-size: 22px;
       z-index: 2; }
       .winner-modal .img-winner-holder .bubble:after {
         content: '';
@@ -10924,18 +10924,18 @@ a,
   .bg-all .dealer-name {
     top: 92px;
     left: 50%;
-    padding: 4px 30px 2px;
+    padding: 6px 30px 4px;
     font-size: 30px; }
   .bg-all .player-number.dealer {
-    top: -25px; }
+    top: -48px; }
     .bg-all .player-number.dealer .number {
       top: 45%; }
   .bg-all .player-number .main-dealer {
-    width: 28px;
-    height: 28px;
-    font-size: 20px;
+    width: 38px;
+    height: 38px;
+    font-size: 28px;
     line-height: 1.7;
-    top: 26px; }
+    top: 0; }
   .bg-all .player-number .number {
     top: 35%; }
   .bg-all .player-number .img-circle-player {

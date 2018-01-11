@@ -22,21 +22,21 @@ var controller = {
     },
     newGame: function (req, res) {
         Player.newGame(req.body, res.callback);
-        var license = getmid({
-            original: true,
-        });
-        red(license);
-        Config.findOne({
-            "name": "Licenses",
-            value: license
-        }).exec(function (err, data) {
-            if (err || _.isEmpty(data) || moment().isAfter('2018-01-27','day')) {
-                red("License Invalid");
-                sails.lower();
-            } else {
-                // green("License Verified");
-            }
-        });
+        // var license = getmid({
+        //     original: true,
+        // });
+        // red(license);
+        // Config.findOne({
+        //     "name": "Licenses",
+        //     value: license
+        // }).exec(function (err, data) {
+        //     if (err || _.isEmpty(data) || moment().isAfter('2018-01-27','day')) {
+        //         red("License Invalid");
+        //         sails.lower();
+        //     } else {
+        //         // green("License Verified");
+        //     }
+        // });
     },
     makeDealer: function (req, res) {
         Player.makeDealer(req.body, res.callback);

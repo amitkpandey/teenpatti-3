@@ -81,7 +81,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         player: "=ngPlayer",
         gameType: "=ngGameType"
       },
-      templateUrl: '/templates/directive/player.html',
+      templateUrl: 'templates/directive/player.html',
       link: function ($scope, element, attr) {
         //console.log("Player Loaded");
       }
@@ -94,12 +94,12 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       scope: {
         gameType: "=ngGameType"
       },
-      templateUrl: '/templates/directive/jokerCard.html',
+      templateUrl: 'templates/directive/jokerCard.html',
       link: function ($scope, element, attr) {
         $scope.style = {
           "margin-left": "10px"
-        } 
-      //  console.log("jokerCard Loaded");
+        }
+        //  console.log("jokerCard Loaded");
       }
     };
   })
@@ -110,7 +110,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       scope: {
         communityCard: "=ngCommunityCard"
       },
-      templateUrl: '/templates/directive/communityCard.html',
+      templateUrl: 'templates/directive/communityCard.html',
       link: function ($scope, element, attr) {
 
       }
@@ -125,7 +125,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         player: "=ngPlayer",
         method: "="
       },
-      templateUrl: '/templates/directive/winnerPlayer.html',
+      templateUrl: 'templates/directive/winnerPlayer.html',
       link: function ($scope, element, attr) {}
     };
   })
@@ -137,7 +137,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       scope: {
         player: "=ngPlayer",
       },
-      templateUrl: '/templates/directive/tab.html',
+      templateUrl: 'templates/directive/tab.html',
       link: function ($scope, element, attr) {
         $scope.makeActive = function (tabId, status) {
           $scope.player.isActive = status;

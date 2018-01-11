@@ -98,7 +98,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       link: function ($scope, element, attr) {
         $scope.style = {
           "margin-left": "10px"
-        }
+        };
         //  console.log("jokerCard Loaded");
       }
     };

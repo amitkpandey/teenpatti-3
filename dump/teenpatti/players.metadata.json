@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"teenpatti.players"},{"v":1,"unique":true,"key":{"playerNo":1},"name":"playerNo_1","background":true,"ns":"teenpatti.players"}]}

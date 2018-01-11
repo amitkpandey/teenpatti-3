@@ -1,34 +1,20 @@
-module.exports.serialport = {
-
-};
+module.exports.serialport = {};
 
 global.isCallApi = true;
+global.currentCardId = "";
+global.currentCardValue = "";
 
-function callApi(cardName) {
-
+function callServe(cardName) {
     if (isCallApi) {
         global.isCallApi = false;
-        var options = {
-            method: 'POST',
-            url: env.realHost + '/api/Player/serve',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: {
-                card: cardName
-            },
-            json: true
-        };
-        request(options, function (error, response, body) {
+        Player.serve({
+            card: cardName
+        }, function (err, data) {
             global.isCallApi = true;
-            if (error) {
-                console.log(error);
+            if (err) {
+                // red(err);
             } else {
-                if (body.value) {
-                    green(body.data);
-                } else {
-                    red(body.error);
-                }
+                // green(data);
             }
         });
     } else {
@@ -53,9 +39,7 @@ SerialPort.list(function (err, allSerial) {
 
 
             port.open(function (err) {
-                if (err) {
-                    // return console.log('Error opening port: ', err.message);
-                }
+                if (err) {}
             });
 
             // The open event is always emitted
@@ -72,6 +56,10 @@ SerialPort.list(function (err, allSerial) {
                 console.log();
                 console.log();
             });
+            port.on('error', function (error) {
+                red("Error Opening Port");
+                beep(5);
+            });
             port.on('close', function () {
                 red("Card Reader Disconnected");
                 beep(3);
@@ -82,30 +70,29 @@ SerialPort.list(function (err, allSerial) {
                 var stringArr = _.split(string, "\n");
                 if (stringArr.length > 1) {
                     var newCard = _.chain(stringArr).head().split(" ").join("").trim().value();
+                    console.log("Card Id :" + newCard);
+                    currentCardId = newCard;
                     string = "";
-                    var cardSelected = _.find(sails.config.cards, function (n) {
-                        var retVal = false;
-                        if (_.isArray(n.value)) {
-                            var findVal = _.find(n.value, function (m) {
-                                return m == newCard;
-                            });
-                            if (findVal) {
-                                retVal = true;
+                    Card.getCard(newCard, function (err, data) {
+                        if (err) {
+                            console.log(err);
+                            currentCardValue = data.name;
+                        } else if (_.isEmpty(data)) {
+                            console.log("No Such Card Found");
+                            currentCardValue = "";
+                        } else {
+                            currentCardValue = data.name;
+                            if (data.name.length == 2) {
+                                green("Card is : " + data.name);
+                                beep();
+                                callServe(data.name);
+                            } else {
+                                beep(5);
                             }
-                        } else {
-                            retVal = (n.value == newCard);
                         }
-                        return retVal;
                     });
-                    if (cardSelected) {
-                        if (cardSelected.name.length == 2) {
-                            beep();
-                        } else {
-                            beep(5);
-                        }
-                        console.log("The Card is " + cardSelected.name);
-                        callApi(cardSelected.name);
-                    }
+                } else {
+                    // currentCardId = "";
                 }
             });
         } else {

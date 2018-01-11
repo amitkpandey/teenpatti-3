@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"teenpatti.users"},{"v":1,"unique":true,"key":{"email":1},"name":"email_1","ns":"teenpatti.users","background":true},{"v":1,"key":{"accessToken":1},"name":"accessToken_1","ns":"teenpatti.users","background":true}]}

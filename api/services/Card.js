@@ -1,15 +1,14 @@
 var schema = new Schema({
-    rfidNo: {
-        type: String,
-        required: true,
-        unique: true,
-
-    },
     name: {
         type: String,
         required: true,
-        required: true
-    }
+        unique: true
+    },
+    value: [{
+        type: String,
+        required: true,
+        index: true
+    }]
 });
 schema.plugin(deepPopulate, {});
 schema.plugin(uniqueValidator);
@@ -18,37 +17,75 @@ module.exports = mongoose.model('Card', schema);
 
 var exports = _.cloneDeep(require("sails-wohlig-service")(schema));
 var model = {
-    card: function (value, name, suit) {
-        this.value = value;
-        this.name = name;
-        this.suit = suit;
+    getCard: function (value, callback) {
+        Card.findOne({
+            value: value
+        }, {
+            name: 1,
+            _id: 0
+        }).exec(callback);
     },
-
-    createCards: function (callback) {
-        var names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'];
-        var suits = ['h', 'd', 's', 'c'];
-        var cards = {};
-        cards.result = [];
-
-
-        var i = 0;
-        for (var s = 0; s < names.length; s++) {
-            for (var n = 0; n < suits.length; n++) {
-                var obj = {
-                    name: names[s] + suits[n],
-                    rfidNo: ++i
-                };
-                Card.saveData(obj, function (err, data2) {
+    findCard: function (callback) {
+        // console.log(currentCardId);
+        if (currentCardId) {
+            Card.count({
+                value: currentCardId
+            }).exec(function (err, data) {
+                callback(err, {
+                    count: data,
+                    cardId: currentCardId,
+                    cardValue: currentCardValue
+                });
+            });
+        } else {
+            callback("No Value found in the Card");
+        }
+    },
+    saveLastCard: function (data, callback) {
+        Card.findOne({
+            name: data.name
+        }).exec(function (err, data) {
+            if (err) {
+                callback(err);
+            } else if (_.isEmpty(data)) {
+                callback("No such Card Found in saveLastCard");
+            } else {
+                data.value.push(currentCardId);
+                data.value = _.uniq(data.value);
+                data.save(callback);
+            }
+        });
+    },
+    replaceCard: function (data, callback) {
+        async.waterfall([
+            function (callback) { // find and Remove Card
+                Card.findOne({
+                    value: currentCardId
+                }).exec(function (err, data) {
                     if (err) {
-                        callback(err, data2);
+                        callback(err);
                     } else {
-                        data3 = data2.toObject();
+                        if (_.isEmpty(data)) {
+                            callback();
+                        } else {
+                            data.value = _.filter(data.value, function (n) {
+                                return n != currentCardId;
+                            });
+                            data.save(function () {
+                                callback();
+                            });
+                        }
+
                     }
                 });
+            },
+            function (callback) { // find other remove card
+                Card.saveLastCard({
+                    name: data.name
+                }, callback);
             }
-        }
+        ], callback);
 
-        callback(null, "Added Successfully");
     }
 };
 module.exports = _.assign(module.exports, exports, model);

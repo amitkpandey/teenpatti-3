@@ -1,6 +1,6 @@
 apps:
   - script: "app.js"
-    name: "Poker - 8081"
+    name: "Teenpatti - 1338"
     watch: false
     args: "--prod"
     exec_mode: "cluster"

@@ -13,22 +13,22 @@
          .dealer-name {
              top: 92px;
              left: 50%;
-             padding: 4px 30px 2px;
+             padding: 6px 30px 4px;
              font-size: 30px;
          }
          .player-number {
              &.dealer {
-                 top: -25px;
+                 top: -48px;
                  .number {
                      top: 45%;
                  }
              }
              .main-dealer {
-                 width: 28px;
-                 height: 28px;
-                 font-size: 20px;
+                 width: 38px;
+                 height: 38px;
+                 font-size: 28px;
                  line-height: 1.7;
-                 top: 26px;
+                 top: 0;
              }
              .number {
                  top: 35%;

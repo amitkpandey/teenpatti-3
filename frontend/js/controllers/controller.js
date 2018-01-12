@@ -13,8 +13,8 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.hasTurn = data.hasTurn;
         $scope.isCheck = data.isCheck;
         $scope.showWinner = data.showWinner;
-        $scope.$apply();
-        if (data.newGame) {
+        console.log('**** inside function_name of TM_FILENAME ****', data);
+        if (data.extra.newGame) {
             $scope.removeWinner();
             $scope.getSettings();
         }
@@ -45,11 +45,10 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
             $scope.hasTurn = data.data.data.hasTurn;
             $scope.isCheck = data.data.data.isCheck;
             $scope.showWinner = data.data.data.showWinner;
-            console.log('**** inside function_name of TM_FILENAME ****',data.data.data);
         });
     };
     $scope.updatePlayers();
-    
+
     $scope.getSettings = function () {
         apiService.getSettings(function (data) {
             $scope.settings = data.data.data.results;

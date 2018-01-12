@@ -1,10 +1,6 @@
 apps:
   - script: "app.js"
-<<<<<<< HEAD
-    name: "TeenPatti - 1338"
-=======
     name: "Teenpatti - 1338"
->>>>>>> acfbcb61e9879bf70d1877e11552c41a95a5edc3
     watch: false
     args: "--prod"
     exec_mode: "cluster"

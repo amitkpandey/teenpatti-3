@@ -270,7 +270,7 @@ a,
                 @include filter(grayscale(100%));
             }
         }
-        &.player-1 {
+        &.player-8 {
             .two-cards {
                 left: 52px;
                 top: 160px;
@@ -289,7 +289,7 @@ a,
                 }
             }
         }
-        &.player-2 {
+        &.player-7 {
             .two-cards {
                 left: -8px;
                 top: 139px;
@@ -308,7 +308,7 @@ a,
                 }
             }
         }
-        &.player-3 {
+        &.player-6 {
             .two-cards {
                 .card-one.ng-hide-remove {
                     @include transform(translate(-276px, -548px) rotate(36deg) !important);
@@ -324,7 +324,7 @@ a,
                 }
             }
         }
-        &.player-4 {
+        &.player-5 {
             .two-cards {
                 .card-one.ng-hide-remove {
                     @include transform(translate(-275px, -410px) rotate(2deg)!important);
@@ -340,7 +340,7 @@ a,
                 }
             }
         }
-        &.player-5 {
+        &.player-4 {
             .two-cards {
                 .card-one.ng-hide-remove {
                     @include transform(translate(310px, -411px) rotate(0deg)!important);
@@ -356,7 +356,7 @@ a,
                 }
             }
         }
-        &.player-6 {
+        &.player-3 {
             .two-cards {
                 .card-one.ng-hide-remove {
                     @include transform(translate(326px, -522px) rotate(-29deg) !important);
@@ -372,7 +372,7 @@ a,
                 }
             }
         }
-        &.player-7 {
+        &.player-2 {
             .two-cards {
                 right: -50px;
                 top: 115px;
@@ -391,7 +391,7 @@ a,
                 }
             }
         }
-        &.player-8 {
+        &.player-1 {
             .two-cards {
                 right: -0px;
                 top: 150px;
@@ -410,7 +410,7 @@ a,
                 }
             }
         }
-        &.player-3 {
+        &.player-6 {
             .two-cards {
                 bottom: 125px;
                 left: -40px;
@@ -425,7 +425,7 @@ a,
                 @include transform(translateX(-50%) rotate(0deg));
             }
         }
-        &.player-6 {
+        &.player-3 {
             .two-cards {
                 bottom: 150px;
                 right: 0;
@@ -445,32 +445,32 @@ a,
         &.player-6 {
             bottom: 24%
         }
-        &.player-8 {
+        &.player-1 {
             left: 25%;
         }
-        &.player-1 {
+        &.player-8 {
             right: 25%;
         }
         &.player-2,
         &.player-7 {
             top: 20%;
         }
-        &.player-2,
-        &.player-3 {
-            right: 7%;
-        }
         &.player-7,
         &.player-6 {
+            right: 7%;
+        }
+        &.player-2,
+        &.player-3 {
             left: 7%;
         }
         &.player-4,
         &.player-5 {
             bottom: 6%;
         }
-        &.player-5 {
+        &.player-4 {
             left: 28%;
         }
-        &.player-4 {
+        &.player-5 {
             right: 28%;
         }
         &.dealer {

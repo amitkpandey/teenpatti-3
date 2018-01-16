@@ -7,10 +7,14 @@
     <div class="blind-seen blind" ng-if="player.isBlind">
         Blind
     </div>
+     <div class="blind-seen fold" ng-if="player.isFold">
+        Fold
+    </div>
     <div class="blind-seen seen" ng-if="!player.isBlind">
         Seen
     </div>
-    <div class="bubble bubble-check bg-blue" ng-show="player.hasCalled">
+    <!--<pre>{{player.isChaal}}</pre>-->
+    <div class="bubble bubble-check bg-blue" ng-show="player.isChaal">
         Chaal
     </div>
     <div class="number">

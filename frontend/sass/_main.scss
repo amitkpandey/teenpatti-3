@@ -191,24 +191,27 @@ a,
         }
         .blind-seen {
             position: absolute;
-            bottom: 7px;
-            left: 1px;
+            bottom: 16px;
+            left: 10px;
             border-radius: 0 0 100px 100px;
-            padding: 14px 25px;
+            padding: 11px 17px;
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #fff;
             font-size: 20px;
             line-height: 1.5;
+            font-weight: 600;
             z-index: 2;
             &.blind {
                 background: #da0015;
             }
+            &.fold {
+                color: #da0015;
+            }
             &.seen {
                 background: #19328f;
-                padding: 10px 25px 10px;
-                bottom: 20px;
+                padding: 10px 22px 12px;
             }
         }
         .fold-pack {
@@ -250,7 +253,7 @@ a,
             background: $brand-info;
             color: #fff;
             text-align: center;
-            line-height: 1.6;
+            line-height: 1.5;
             position: absolute;
             top: 0;
             right: 0;

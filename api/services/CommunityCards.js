@@ -61,6 +61,10 @@ var model = {
             } else {
                 player.detail = teenPattiSolver[funcName](player.allCards);
             }
+         
+            if(player.isTurn){
+                player.detail.score = Number(player.detail.score) - 0.5;
+            }
            // console.log("player.detail", player.detail);
            // console.log("player", player);
         });
@@ -72,6 +76,7 @@ var model = {
         scores.sort(function (a, b) {
             return b - a
         });
+        
 
         // var scores = _.sortedUniq(_.map(players, function (data) {
         //     return Number(data.detail.score);

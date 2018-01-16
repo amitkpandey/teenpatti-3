@@ -920,7 +920,7 @@ var model = {
                             return (n._id + "") == (playerFromTop._id + "");
                         });
                         if (turnIndex >= 0) {
-                            var nextPlayer = (turnIndex + 1) % players.length;
+                            var nextPlayer = Math.abs((turnIndex - 1) % players.length);
                             var finalData = [];
                             finalData.push(players[nextPlayer]);
                             finalData.push(players[turnIndex]);
@@ -1077,7 +1077,7 @@ var model = {
                             return (n._id + "") == (playerFromTop._id + "");
                         });
                         if (turnIndex >= 0) {
-                            var nextPlayer = (turnIndex + 1) % players.length;
+                            var nextPlayer = Math.abs((turnIndex - 1) % players.length);
                             var finalData = {};
                             finalData.toPlayer = players[nextPlayer];
                             finalData.fromPlayer = players[turnIndex];

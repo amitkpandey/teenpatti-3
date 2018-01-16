@@ -22,6 +22,10 @@ var schema = new Schema({
         type: Boolean,
         default: false
     },
+    isChaal: {
+        type: Boolean,
+        default: false
+    },
     cards: [String],
     // cardsServe: {
     //     type: Number,
@@ -424,8 +428,8 @@ var model = {
                     fwCallback(err, cards);
                 });
             },
-            function(arg1, callback){
-               SideShow.remove({},callback);
+            function (arg1, callback) {
+                SideShow.remove({}, callback);
             },
             function (arg1, fwCallback) {
                 Setting.update({
@@ -931,7 +935,7 @@ var model = {
                                     var looseIndex = _.findIndex(finalData, function (value) {
                                         return (value.winRank == 2);
                                     });
-                                     
+
                                     var turnIndex1 = _.findIndex(finalData, function (value) {
                                         return value.isTurn;
                                     });
@@ -963,7 +967,7 @@ var model = {
                                             });
 
                                         } else {
-                                             console.log("inside the condition");
+                                            console.log("inside the condition");
                                             async.waterfall([
                                                     Player.changeTurn,
                                                     Player.fold,
@@ -978,7 +982,7 @@ var model = {
                                                             callback(err);
                                                         });
                                                     }
-                                                   
+
 
                                                 ],
                                                 function (err, data) {
@@ -987,8 +991,8 @@ var model = {
                                                     } else {
                                                         GameLogs.create(function () {
                                                             console.log("inside the condition.........");
-                                                          //  Player.blastSocket({},true);
-                                                           // callback();
+                                                            //  Player.blastSocket({},true);
+                                                            // callback();
                                                             return 0;
                                                         }, 3);
                                                     }
@@ -1012,7 +1016,7 @@ var model = {
                                             } else {
                                                 GameLogs.create(function () {
                                                     Player.blastSocket();
-                                                   // callback();
+                                                    // callback();
                                                     return 0;
                                                 });
 
@@ -1124,8 +1128,19 @@ var model = {
             }
         });
     },
-    changeTurn: function (callback) {
+    changeTurn: function (callback, makeChaal = false) {
         async.waterfall([
+            function (callback) {
+                Player.update({}, {
+                    $set: {
+                        isChaal: false
+                    }
+                }, {
+                    multi: true
+                }).exec(function (err, data) {
+                    callback(err);
+                });
+            },
             Player.currentTurn,
             function (playerFromTop, callback) {
                 Player.find({
@@ -1147,6 +1162,9 @@ var model = {
                                 removeTurn: function (callback) {
                                     var player = players[turnIndex];
                                     player.isTurn = false;
+                                    if (makeChaal) {
+                                        player.isChaal = true;
+                                    }
                                     player.save(callback);
                                 },
                                 addTurn: function (callback) {

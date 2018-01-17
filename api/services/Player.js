@@ -924,7 +924,10 @@ var model = {
                             return (n._id + "") == (playerFromTop._id + "");
                         });
                         if (turnIndex >= 0) {
-                            var nextPlayer = Math.abs((turnIndex - 1) % players.length);
+                            var nextPlayer = (turnIndex - 1) % players.length;
+                            if (nextPlayer < 0) {
+                                nextPlayer = players.length - 1;
+                            }
                             var finalData = [];
                             finalData.push(players[nextPlayer]);
                             finalData.push(players[turnIndex]);
@@ -969,8 +972,13 @@ var model = {
                                         } else {
                                             console.log("inside the condition");
                                             async.waterfall([
+                                                    Player.changeTurnPrv,
+                                                    function(data, callback){
+                                                        Player.fold({}, function(err, data){
+                                                                callback(err);       
+                                                        });
+                                                    },
                                                     Player.changeTurn,
-                                                    Player.fold,
                                                     function (data, callback) {
                                                         var sideShowData = {};
                                                         sideShowData.fromPlayerNo = players[turnIndex].playerNo;
@@ -1081,7 +1089,10 @@ var model = {
                             return (n._id + "") == (playerFromTop._id + "");
                         });
                         if (turnIndex >= 0) {
-                            var nextPlayer = Math.abs((turnIndex - 1) % players.length);
+                            var nextPlayer = (turnIndex - 1) % players.length;
+                            if (nextPlayer < 0) {
+                                nextPlayer = players.length - 1;
+                            }
                             var finalData = {};
                             finalData.toPlayer = players[nextPlayer];
                             finalData.fromPlayer = players[turnIndex];
@@ -1127,6 +1138,77 @@ var model = {
                 callback(null, data);
             }
         });
+    },
+    changeTurnPrv: function (callback, makeChaal = false) {
+        async.waterfall([
+            function (callback) {
+                Player.update({}, {
+                    $set: {
+                        isChaal: false
+                    }
+                }, {
+                    multi: true
+                }).exec(function (err, data) {
+                    callback(err);
+                });
+            },
+            Player.currentTurn,
+            function (playerFromTop, callback) {
+                Player.find({
+                    $or: [{
+                        isActive: true,
+                        isFold: false,
+                    }, {
+                        isTurn: true
+                    }]
+                }).exec(function (err, players) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        var turnIndex = _.findIndex(players, function (n) {
+                            return (n._id + "") == (playerFromTop._id + "");
+                        });
+                        if (turnIndex >= 0) {
+                            async.parallel({
+                                removeTurn: function (callback) {
+                                    var player = players[turnIndex];
+                                    player.isTurn = false;
+                                    if (makeChaal) {
+                                        player.isChaal = true;
+                                    }
+                                    player.save(callback);
+                                },
+                                addTurn: function (callback) {
+                                    var newTurnIndex = (turnIndex - 1) % players.length;
+                                    if(newTurnIndex < 0){
+                                        newTurnIndex = players.length - 1;
+                                    }
+                                    var player = players[newTurnIndex];
+                                    player.isTurn = true;
+                                    player.save(callback);
+                                },
+                                turnLimit: function (callback) {
+                                    Setting.findOne({
+                                        name: "turnLimit"
+                                    }).exec(callback);
+                                }
+                            }, function (err, data) {
+                                callback(err, data);
+                                Player.blastSocket();
+
+                                Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], data.turnLimit, function (err) {
+                                    Player.blastSocket();
+                                });
+
+                            });
+                        } else {
+                            callback("No Element Remaining");
+                        }
+                    }
+                });
+
+            }
+        ], callback);
     },
     changeTurn: function (callback, makeChaal = false) {
         async.waterfall([

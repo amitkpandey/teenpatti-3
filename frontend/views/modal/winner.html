@@ -29,6 +29,30 @@
                     </div>
                 </div>
             </div>
+
+               <div class="col-md-6" ng-repeat="winners in winner" ng-if="winners.winRank > 1">
+                <div class="img-winner-holder winner-only-one">
+                    <div class="bubble">
+                        {{winners.detail.desc}}
+                    </div>
+                    <img src="img/winner-1.png" alt="" class="img-full">
+                    <div class="player-card">
+                        <img src="img/circle-icon.png" alt="" width="75">
+                        <span>{{winners.playerNo}}</span>
+                    </div>
+                    <div class="img-winner-card">
+                        <card card='{{winners.cards[0]}}' ng-style="style" class="img-full" ng-if="winners.cards[0]">
+                        </card>
+                        <card card='{{winners.cards[1]}}' ng-style="style" class="img-full winner-card-two" ng-if="winners.cards[1]">
+                        </card>
+                        <card card='{{winners.cards[2]}}' ng-style="style" class="img-full winner-card-three" ng-if="winners.cards[2]">
+                        </card>
+                        <card card='{{winners.cards[3]}}' ng-style="style" class="img-full winner-card-four" ng-if="winners.cards[3]">
+                        </card>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -44,10 +68,10 @@
         </div>
     </div>
 </div>
-<div class="title-winner text-winner-other text-center" ng-if="!(winner.winner)">
+<!--<div class="title-winner text-winner-other text-center" ng-if="!(winner.winner)">
     Other Player
-</div>
-<div class="row">
+</div>-->
+<!--<div class="row">
     <div class="col-md-12">
         <div class="row">
             <div class="mt-70">
@@ -77,4 +101,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->

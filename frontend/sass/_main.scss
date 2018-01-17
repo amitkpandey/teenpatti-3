@@ -166,14 +166,14 @@ a,
         }
         .bubble {
             position: absolute;
-            top: -10px;
+            top: -15px;
             right: -56px;
             background: #da0015;
             border-radius: 60%;
-            padding: 5px 10px;
+            padding: 8px 10px 3px;
             text-align: justify;
             color: #fff;
-            font-size: 25px;
+            font-size: 28px;
             z-index: 2;
             &:after {
                 content: '';
@@ -195,6 +195,7 @@ a,
             left: 10px;
             border-radius: 0 0 100px 100px;
             padding: 11px 17px;
+            width: 101px;
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -216,18 +217,18 @@ a,
         }
         .fold-pack {
             position: absolute;
-            bottom: 15px;
-            left: 7px;
+            bottom: 12px;
+            left: 8px;
             min-width: 85px;
             text-align: center;
             z-index: 1;
             @include transform(translate(-20%, 18px));
             background: #b20003;
-            padding: 4px 9px 2px;
+            padding: 8px 9px 2px;
             letter-spacing: 1px;
             line-height: 1;
             color: #fff;
-            font-size: 18px;
+            font-size: 24px;
             border: 1px solid #b20003;
             border-radius: 8px;
             font-family: "AvenirLTStd-Black";
@@ -250,7 +251,8 @@ a,
             width: 22px;
             height: 22px;
             font-style: italic;
-            background: $brand-info;
+            background: #17821c;
+            font-weight: 600;
             color: #fff;
             text-align: center;
             line-height: 1.5;
@@ -634,7 +636,7 @@ a,
                 }
             }
             .bubble {
-                top: -75px;
+                top: -80px;
                 left: 190px;
                 font-size: 28px;
             }
@@ -720,10 +722,11 @@ a,
     }
     .title-winner {
         color: #ffd92e;
-        font-size: 70px;
+        font-size: 100px;
         font-family: "AvenirLTStd-Black";
         text-align: center;
         text-transform: uppercase;
+        margin-bottom: 80px;
         line-height: 1;
         &.text-winner-other {
             color: #fff;

@@ -12,8 +12,11 @@ myApp.controller('HomeCtrl', function ($scope, TemplateService, NavigationServic
         $scope.extra = data.extra;
         $scope.hasTurn = data.hasTurn;
         $scope.isCheck = data.isCheck;
+        $scope.isChaal = data.isChaal;        
         $scope.showWinner = data.showWinner;
-        console.log('**** inside function_name of TM_FILENAME ****', data);
+        console.log('**** data ****', data);
+        console.log('****isChaal ****', $scope.isChaal);
+        
         if (data.extra.newGame) {
             $scope.removeWinner();
             $scope.getSettings();

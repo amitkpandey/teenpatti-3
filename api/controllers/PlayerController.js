@@ -78,7 +78,7 @@ var controller = {
         Player.raise(req.body, res.callback);
     },
     moveTurn: function (req, res) {
-        Player.changeTurn(res.callback);
+        Player.changeTurn(res.callback, true);
     },
     makeSeen: function (req, res) {
         Player.makeSeen(req.body, res.callback);

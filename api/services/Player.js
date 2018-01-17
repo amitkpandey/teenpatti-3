@@ -123,6 +123,7 @@ var model = {
                     hasRaised: 1,
                     isLastBlind: 1,
                     isBlind: 1,
+                    isChaal:1,
                     _id: 0
                 }).exec(callback);
             },

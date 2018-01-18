@@ -10159,8 +10159,8 @@ a,
   .bg-all .community-cards {
     width: 700px;
     position: absolute;
-    top: 48%;
-    left: 50%;
+    top: 46.5%;
+    left: 48%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%); }
   .bg-all .player-number {
@@ -10721,7 +10721,7 @@ a,
   .container-big {
     width: 1650px; }
     .container-big .community-cards {
-      width: 60%; }
+      width: 44%; }
   .mt100 {
     margin-top: -100px; }
   .bg-all .dealer-name {

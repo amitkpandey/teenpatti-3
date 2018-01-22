@@ -10259,7 +10259,10 @@ a,
       .bg-all .player-number .blind-seen.blind {
         background: #da0015; }
       .bg-all .player-number .blind-seen.fold {
-        color: #da0015; }
+        color: #da0015;
+        bottom: 32px;
+        left: 5px;
+        font-size: 26px; }
       .bg-all .player-number .blind-seen.seen {
         background: #19328f;
         padding: 10px 22px 12px; }
@@ -10610,9 +10613,13 @@ a,
     .bg-all .player-number.disable .blind-seen.blind {
       background: #e2dac0;
       color: #e2dac0;
-      opacity: 0.8; }
+      opacity: 0.8;
+      display: none; }
     .bg-all .player-number.disable .number {
       color: #787878; }
+    .bg-all .player-number.disable .number {
+      top: 50%;
+      font-size: 75px; }
   .bg-all .two-cards {
     position: absolute; }
     .bg-all .two-cards .card-two,

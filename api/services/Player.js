@@ -5,6 +5,26 @@ var schema = new Schema({
         unique: true,
         // excel: true,
     },
+    buyInAmt: {
+        type: Number,
+        default: 0
+    },
+
+    amtToPlay: {
+        type: Number,
+        default: 0
+    },
+
+   maxBlind : {
+        type: Number,
+        default: 0
+    },
+
+    maxSeen : {
+        type: Number,
+        default: 0
+    },
+
     isTurn: {
         type: Boolean,
         default: false
@@ -26,11 +46,45 @@ var schema = new Schema({
         type: Boolean,
         default: false
     },
+
+    hasTurnCompleted: {
+        type: Boolean,
+        default: false
+    },
+
+
+    isAllIn: {
+        type: Boolean,
+        default: false
+    },
+
     cards: [String],
     // cardsServe: {
     //     type: Number,
     //     default: 0
     // },
+
+    table: {
+        type: Schema.Types.ObjectId,
+        ref: 'Table'
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+
+
+    totalAmount: {
+        type: Number,
+        default: 0
+    },
+
+    tableLeft: {
+        type: Boolean,
+        default: false
+    },
+
+
     isLastBlind: {
         type: Boolean,
         default: false
@@ -123,7 +177,7 @@ var model = {
                     hasRaised: 1,
                     isLastBlind: 1,
                     isBlind: 1,
-                    isChaal:1,
+                    isChaal: 1,
                     _id: 0
                 }).exec(callback);
             },
@@ -974,9 +1028,9 @@ var model = {
                                             console.log("inside the condition");
                                             async.waterfall([
                                                     Player.changeTurnPrv,
-                                                    function(data, callback){
-                                                        Player.fold({}, function(err, data){
-                                                                callback(err);       
+                                                    function (data, callback) {
+                                                        Player.fold({}, function (err, data) {
+                                                            callback(err);
                                                         });
                                                     },
                                                     Player.changeTurn,
@@ -1181,7 +1235,7 @@ var model = {
                                 },
                                 addTurn: function (callback) {
                                     var newTurnIndex = (turnIndex - 1) % players.length;
-                                    if(newTurnIndex < 0){
+                                    if (newTurnIndex < 0) {
                                         newTurnIndex = players.length - 1;
                                     }
                                     var player = players[newTurnIndex];

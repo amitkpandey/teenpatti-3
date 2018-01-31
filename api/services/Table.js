@@ -213,15 +213,15 @@ var model = {
     },
 
 
-  addUserToTable: function (data, callback) {
+ 
+
+
+addUserToTable: function (data, callback) {
         console.log(data);
 
+
         async.parallel({
-            user: function (callback) {
-                User.findOne({
-                    accessToken: data.accessToken
-                }).exec(callback);
-            },
+            
             table: function (callback) {
                 Table.findOne({
                     _id: data.tableId
@@ -231,11 +231,11 @@ var model = {
                 Player.find({
                     table: data.tableId
                 }).exec(callback);
-            }
+            },
+          
         }, function (err, result) {
 
             if (!_.isEmpty(result.user)) {
-                var user = result.user;
                 var table = result.table;
                 var playerIndex = -1;
                 //check for max players
@@ -253,6 +253,7 @@ var model = {
                     return (p.user + "" == user._id + "" && p.table + "" == data.tableId + "");
                 });
                 console.log(playerAdded);
+            
 
                 console.log("playerIndex ", playerIndex);
                 //already exists
@@ -270,8 +271,52 @@ var model = {
                     callback("position filled");
                     return 0;
                 }
-           
+              
+                var player = {};
+                player.table = data.tableId;
+                player.playerNo = data.playerNo;
+                player.buyInAmt = data.amount;
+                player.socketId = data.socketId;
+                player.autoRebuy = data.autoRebuy;
+                
+
+                if (player.autoRebuy) {
+                    player.autoRebuyAmt = player.buyInAmt;
+                }
+
+                async.waterfall([function (callback) {
+                   
+                    callback(null);
+                }, function (callback) {
+                    Player.saveData(player, function (err, player) {
+                        if (err) {
+                           
+                            callback(err);
+                        } 
+                         else {
+                                Table.connectSocket(table, data.socketId,player, callback);
+                            }
+                    
+                    });
+                }], function (err, data) {
+                    console.log("err...................", err);
+                    callback(err, data)
+                });
+            } else {
+                console.log("Please Login first");
+                callback("Please Login first");
+            }
         });
+       
+    },
+
+
+
+
+
+
+
+
 
 
 };

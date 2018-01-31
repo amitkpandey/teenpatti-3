@@ -10,6 +10,12 @@ var schema = new Schema({
         default: 0
     },
 
+
+loosingAmt: {
+        type: Number,
+        default: 0
+    },
+
     amtToPlay: {
         type: Number,
         default: 0

@@ -1,10 +1,16 @@
 var schema = new Schema({
-   
-minimumBuyin: {
+
+    minimumBuyin: {
         type: Number,
         require: true
     },
-  
+
+
+    potAmt: {
+        type: Number,
+        default: 0
+    },
+
     maximumNoOfPlayers: {
         type: Number,
         require: true
@@ -25,19 +31,19 @@ minimumBuyin: {
     dealer: Number,
 
     timeoutTime: Number,
-    
-    
+
+
     activePlayer: [{
         type: Schema.Types.ObjectId,
         ref: 'Player'
     }],
 
-   
+
     setDealer: {
         type: Boolean,
         default: false
     },
-    
+
     currentRoundAmt: [{
         playerNo: {
             type: Number

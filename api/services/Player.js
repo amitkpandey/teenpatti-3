@@ -59,10 +59,11 @@ var schema = new Schema({
     },
 
     cards: [String],
-    // cardsServe: {
-    //     type: Number,
-    //     default: 0
-    // },
+    
+    cardsServe: {
+        type: Number,
+        default: 0
+    },
 
     table: {
         type: Schema.Types.ObjectId,
@@ -93,7 +94,11 @@ var schema = new Schema({
         type: Boolean,
         default: true
 
-    }
+    },
+    accessToken: {
+        type: [String],
+        index: true
+    },
     // hasRaised: {
     //     type: Boolean,
     //     default: false

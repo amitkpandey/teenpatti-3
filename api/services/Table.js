@@ -69,17 +69,11 @@ var model = {
 
 
  getAllTable: function (data, callback) {
-        var requiredData = Player.requiredData();
-        this.find({}, requiredData.table).exec(callback);
+        this.find({}).exec(callback);
     },
     makePlayerInactive: function (data, callback) {
         async.parallel({
-            user: function (callback) {
-                User.findOne({
-                    accessToken: data.accessToken
-                }).exec(callback);
-            },
-
+           
             player: function (callback) {
                 Player.find({
                     table: data.tableId,
@@ -87,13 +81,13 @@ var model = {
                 }).exec(callback);
             }
         }, function (err, result) {
-            if (_.isEmpty(result.user) || _.isEmpty(result.player)) {
+            if (_.isEmpty(result.player)) {
                 callback("Invalide Request");
                 return 0;
             }
 
             var removerPlayer = _.find(result.player, function (p) {
-                return (result.user._id + "" == p.user + "");
+                return (result.player._id + "" == p.player + "");
             });
             // var socketId = result.player.socketId;
             if (!removerPlayer) {
@@ -129,7 +123,7 @@ var model = {
                 callback(err);
             } else {
 
-                if (_.isEmpty(result.user) || _.isEmpty(result.player) || _.isEmpty(result.table)) {
+                if (_.isEmpty(result.player) || _.isEmpty(result.table)) {
                     callback("Invalide Request");
                     return 0;
                 }

@@ -174,7 +174,7 @@ var model = {
             callback(err, userData);
         });
     },
-    getAll: function (data, callback) {
+     getAll: function (data, callback) {
         var cards = {};
         async.parallel({
             playerCards: function (callback) {
@@ -185,12 +185,10 @@ var model = {
                     isDealer: 1,
                     isFold: 1,
                     cards: 1,
-                    isAllIn: 1,
-                    hasRaised: 1,
-                    isLastBlind: 1,
+                    showCard: 1,
+                    _id: 0,
                     isBlind: 1,
                     isChaal: 1,
-                    _id: 0
                 }).exec(callback);
             },
             currentGameType: function (callback) {
@@ -206,85 +204,20 @@ var model = {
                                 callback(err, data[gameIndex]);
                             } else {
                                 var normalGameIndex = _.findIndex(data, function (game) {
-                                    return game.name == 'Normal';
+                                    return game.name == 'Joker';
                                 });
 
                                 callback(err, data[normalGameIndex]);
-
                             }
                         }
                     }
                 );
-            }
-            // communityCards: function (callback) {
-            //     CommunityCards.find({}, {
-            //         cardNo: 1,
-            //         cardValue: 1,
-            //         isOpen: 1,
-            //         isBurn: 1,
-            //         _id: 0
-            //     }).exec(callback);
-            // }
+            },
         }, function (err, data) {
             if (err) {
                 callback(err);
             } else {
-                var turnPlayer = _.find(data.playerCards, function (player) {
-                    return player.isTurn;
-                });
-                // var raiseIndex = _.findIndex(data.playerCards, function (player) {
-                //     return player.hasRaised;
-                // });
-                // var lastBlindIndex = _.findIndex(data.playerCards, function (player) {
-                //     return player.isLastBlind;
-                // });
-                // var blankCardIndex = _.findIndex(data.communityCards, function (card) {
-                //     return card.cardValue === "";
-                // });
-                //cardServed
-                console.log("turnplayer");
-                console.log(turnPlayer);
-                if (turnPlayer) {
-                    data.hasTurn = true;
 
-                    // if (raiseIndex < 0 && lastBlindIndex < 0) {
-                    //     data.isCheck = true;
-                    // }
-                    // if (turnPlayer.isLastBlind && turnPlayer.isTurn) {
-                    //     data.isCheck = true;
-                    // }
-                } else {
-                    data.hasTurn = false;
-
-
-                }
-                var totalCards = data.currentGameType.totalCards;
-                var activePlayer = _.filter(data.playerCards,
-                    function (player) {
-                        return (player.isActive && !player.isFold);
-                    }
-                );
-                console.log(totalCards);
-
-                var cardsRemainToserve = _.findIndex(activePlayer,
-                    function (player) {
-                        return (player.cards.length < totalCards);
-                    }
-                );
-                data.cardServed = false;
-                //cardServed
-                if (cardsRemainToserve < 0) {
-                    data.cardServed = true;
-                }
-                console.log(cardsRemainToserve);
-                // console.log(activePlayer);
-
-                if (activePlayer && activePlayer.length <= 2 && cardsRemainToserve < 0) {
-                    console.log(activePlayer.length);
-                    data.showWinner = true;
-                } else {
-                    data.showWinner = false;
-                }
                 callback(err, data);
             }
         });

@@ -113,11 +113,6 @@ var model = {
     removePlayer: function (data, callback) {
         // console.log(data);
         async.parallel({
-            user: function (callback) {
-                User.findOne({
-                    accessToken: data.accessToken
-                }).exec(callback);
-            },
             table: function (callback) {
                 Table.findOne({
                     _id: data.tableId
@@ -159,12 +154,6 @@ var model = {
                 var socketId = removerPlayer.socketId;
                 var removeCheck = false;
 
-                if (result.table.status == 'beforeStart') {
-                    removeCheck = true;
-                }
-                //  console.log("removedIds", removedIds);
-                //  console.log("removerPlayer...........", removerPlayer)
-                //result.table.activePlayer = result.table.activePlayer;
                 result.table.markModified('activePlayer');
                 //console.log("socketId....", socketId);
                 //console.log("result.table ", String("room" + result.table._id));
@@ -312,7 +301,35 @@ addUserToTable: function (data, callback) {
 
 
 
-
+ connectSocket: function (table, socketId,player, callback) {
+        if (table.activePlayer) {
+            table.activePlayer.push(
+                player._id
+            );
+        } else {
+            table.activePlayer = [
+                player._id
+            ];
+        }
+        async.parallel([
+          
+            function (callback) {
+                table.save(callback);
+            }
+        ], function (err, data) {
+            if (err) {
+                console.log(err);
+                callback(err);
+            } else {
+                //  console.log(sails.sockets.rooms());
+                // sails.sockets.subscribers(table._id, function(err, socketId){
+                //        console.log(socketId);
+                // });
+                Table.blastAddPlayerSocket(table._id);
+                callback(err, player);
+            }
+        });
+    },
 
 
 

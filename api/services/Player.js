@@ -244,129 +244,8 @@ var model = {
         }, callback);
 
     },
-    showWinner: function (callback) {
-        async.parallel({
-            players: function (callback) {
-                Player.find({
-                    isActive: true,
-                    isFold: false
-                }).lean().exec(callback);
-            },
-            currentGameType: function (callback) {
-                GameType.find({}).exec(
-                    function (err, data) {
-                        if (err) {
-                            callback(err);
-                        } else {
-                            var gameIndex = _.findIndex(data, function (game) {
-                                return game.currentType
-                            });
-                            if (gameIndex >= 0) {
-                                callback(err, data[gameIndex]);
-                            } else {
-                                var normalGameIndex = _.findIndex(data, function (game) {
-                                    return game.name == 'Normal';
-                                });
-                                if (normalGameIndex >= 0) {
-                                    callback(err, data[normalGameIndex]);
-                                } else {
-                                    callback();
-                                }
-                            }
-                        }
-                    }
-                );
-            },
-            sideShows: function (callback) {
-                SideShow.find({}, {
-                    fromPlayerNo: 1,
-                    toPlayerNo: 1,
-                    winner: 1
-                }).lean().exec(callback);
-            }
-        }, function (err, data) {
-            if (err) {
-                callback(err);
-            } else {
-                //Check All Player Cards are Placed
-                CommunityCards.findWinner(data.players, data.currentGameType, function (err, finalVal) {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        console.log("data.players", data.players);
-                        Player.blastSocketWinner({
-                            winners: data.players,
-                            gameType: data.currentGameType,
-                            sideShows: data.sideShows
-                            // communityCards: data.communityCards
-                        });
-                        callback(null, {
-                            winners: data.players,
-                            gameType: data.currentGameType,
-                            sideShows: data.sideShows
-                            //communityCards: data.communityCards
-                        });
-                    }
-                });
-
-            }
-        });
-    },
-    revealCards: function (data, callback) {
-        CommunityCards.find({
-            isOpen: true
-        }).exec(function (err, cardsData) {
-            var revealNo = cardsData.length;
-            switch (revealNo) {
-                case 0:
-                    CommunityCards.update({
-                        cardNo: {
-                            $lt: 4
-                        }
-                    }, {
-                        $set: {
-                            isOpen: true
-                        }
-                    }, {
-                        multi: true
-                    }, function (err, data) {
-                        Player.blastSocket();
-                        callback(err, data);
-                    });
-                    break;
-                case 3:
-                    CommunityCards.update({
-                        cardNo: 4
-                    }, {
-                        $set: {
-                            isOpen: true
-                        }
-                    }, {
-                        multi: true
-                    }, function (err, data) {
-                        Player.blastSocket();
-                        callback(err, data);
-                    });
-                    break;
-                case 4:
-                    CommunityCards.update({
-                        cardNo: 5
-                    }, {
-                        $set: {
-                            isOpen: true
-                        }
-                    }, {
-                        multi: true
-                    }, function (err, data) {
-                        Player.blastSocket();
-                        callback(err, data);
-                    });
-                    break;
-                default:
-                    callback(null, "No more cards to reveal");
-            }
-        });
-    },
+   
+  
     newGame: function (data, callback) {
         var Model = this;
         async.waterfall([
@@ -561,63 +440,7 @@ var model = {
             callback(err, CurrentTab);
         });
     },
-    assignCard: function (card, wfCallback) {
-        var Model = this;
-        Model.findOneAndUpdate({
-            isTurn: true,
-            cardsServe: {
-                $lt: 2
-            }
-        }, {
-            $push: {
-                cards: card
-            },
-            $inc: {
-                cardsServe: 1
-            }
-        }, {
-            new: true
-        }, function (err, CurrentTab) {
-            if (!_.isEmpty(CurrentTab)) {
-                readLastValue = card;
-                wfCallback(err, CurrentTab);
-            } else {
-                //$nin    
-                CommunityCards.findOneAndUpdate({
-                    $or: [{
-                        cardValue: {
-                            $in: ["", undefined, null]
-                        }
-                    }, {
-                        cardValue: {
-                            $exists: false
-                        }
-                    }]
-                }, {
-                    cardValue: card
-                }, {
-                    new: true,
-                    sort: {
-                        cardValue: 1
-                    }
-                }, function (err, CurrentTab) {
-                    readLastValue = card;
-                    if (!_.isEmpty(CurrentTab)) {
-                        if (CurrentTab.cardNo == 5) {
-                            cardServed = true;
-                            Model.changeTurnWithDealer(wfCallback);
-                        } else {
-                            wfCallback(err, CurrentTab);
-                        }
-                    } else {
-                        wfCallback(err, "Extra Card");
-                    }
-
-                    //callback(null, "Repeated Card"); 
-                });
-            }
-        });
-    },
+   
     // serve: function (data, callback) {
     //     if (data.card && data.card.length == 2) {
     //         async.parallel({
@@ -808,29 +631,29 @@ var model = {
 
 
 
- serve: function (data, callback) {
-        console.log(data);
-        Table.findOne({
-            _id: data.tableId
-        }).exec(function (err, table) {
-            if (err || _.isEmpty(table)) {
-                callback(err);
-            } else {
-                if (table.setDealer) {
-                    Player.serveCard(data, callback);
-                } else {
-                    Player.makeDealer(data, function (err, dealer) {
-                        if (err) {
-                            callback(err);
-                        } else {
-                            Player.serveCard(data, callback);
-                        }
-                    });
-                }
-            }
-        });
+//  serve: function (data, callback) {
+//         console.log(data);
+//         Table.findOne({
+//             _id: data.tableId
+//         }).exec(function (err, table) {
+//             if (err || _.isEmpty(table)) {
+//                 callback(err);
+//             } else {
+//                 if (table.setDealer) {
+//                     Player.serveCard(data, callback);
+//                 } else {
+//                     Player.makeDealer(data, function (err, dealer) {
+//                         if (err) {
+//                             callback(err);
+//                         } else {
+//                             Player.serveCard(data, callback);
+//                         }
+//                     });
+//                 }
+//             }
+//         });
 
-    },
+//     },
 
 
 
@@ -1104,34 +927,9 @@ var model = {
 
                                     }
                                 }
-                                // winnerData
-
-                                //data
-                                // console.log("data", finalData);
 
                             });
 
-                            // Player.blastSocketSideShow(finalData);
-
-                            // async.parallel({
-                            //     removeTurn: function (callback) {
-                            //         var player = players[turnIndex];
-                            //         player.isTurn = false;
-                            //         player.save(callback);
-                            //     },
-                            //     addTurn: function (callback) {
-                            //         var newTurnIndex = (turnIndex + 1) % players.length;
-                            //         var player = players[newTurnIndex];
-                            //         player.isTurn = true;
-                            //         player.save(callback);
-                            //     }
-                            // }, function (err, data) {
-                            //     callback(err, data);
-                            //     Player.blastSocket();
-                            //     // Player.whetherToEndTurn(data.removeTurn[0], data.addTurn[0], function (err) {
-                            //     //     Player.blastSocket();
-                            //     // });
-                            // });
                         } else {
                             callback("No Element Remaining");
                         }
@@ -1141,6 +939,7 @@ var model = {
             }
         ], callback);
     },
+
     sideShow: function (callback) {
         async.waterfall([
             Player.currentTurn,
@@ -1597,6 +1396,52 @@ var model = {
 
     },
 
+
+//for cards serve//
+
+ serve: function (data, callback) {
+        // async.parallel({
+        //     players: function (callback) {
+        //         Player.find({
+        //             isActive: true
+        //         }).exec(callback);
+        //     },
+
+        // }, function (err, response) {
+           
+        //     var allCards = [];
+        //     var playerCards = [];
+        //     var playerCount = response.players.length;
+        //     var dealerNo = 1;
+        //     var maxCardsPerPlayer = 3;
+           
+
+        //     // check whether no of players are greater than 1
+        //     if (playerCount <= 1) {
+        //         callback("Less Players - No of Players selected are too less");
+        //         return 0;
+        //     }
+
+        //     // check whether dealer is provided or not
+        //     if (dealerNo < 0) {
+        //         callback("Dealer is not selected");
+        //         return 0;
+        //     }
+
+        // });
+
+//serving
+            console.log("in sesrve");
+var cardArr=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+
+ var players=5;
+
+
+  _.each(cardArr, function (value) {
+                                console.log(value);
+                            });
+ }
+ 
 
 };
 module.exports = _.assign(module.exports, exports, model);

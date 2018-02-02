@@ -44,6 +44,18 @@ var schema = new Schema({
         default: false
     },
 
+
+    status: {
+        type: String,
+        enum: [
+            'beforeStart',
+            'serve',
+            'Turn',
+            'winner'
+        ],
+        default: 'beforeStart'
+    },
+
     currentRoundAmt: [{
         playerNo: {
             type: Number
@@ -296,6 +308,83 @@ addUserToTable: function (data, callback) {
         });
        
     },
+
+
+  changeStatus: function (table, callback) {
+        // table = new this(table);
+        // console.log("inside changeStatus");
+        // table.save(function (err, data) {
+        //     callback(err, data);
+        // });
+
+
+        Table.findOneAndUpdate({
+            _id: table._id
+        }, {
+            status: table.status
+        }).exec(function (err, data) {
+                    callback(err, data);
+            
+        });
+    },
+
+
+
+ getPrvStatus: function (curStatus) {
+        var status = [
+            'beforeStart',
+            'serve',
+            'preFlop',
+            'Flop',
+            'Turn',
+            'River',
+            'winner'
+        ];
+
+        var index = _.findIndex(status, function (s) {
+            return s == curStatus
+        });
+
+        if (index >= 0) {
+            curStatus = status[index - 1];
+        }
+
+        return curStatus;
+
+    },
+    updateStatus: function (tableId, callback) {
+        console.log("updateStatus ", tableId);
+        var status = [
+            'beforeStart',
+            'serve',
+            'Turn',
+            'winner'
+        ];
+        Table.findOne({
+            _id: tableId
+        }).exec(function (err, data) {
+            var index = _.findIndex(status, function (s) {
+                return s == data.status
+            });
+            data.currentRoundAmt = [];
+            if (index >= 0) {
+                data.status = status[index + 1];
+            }
+            async.parallel([function (callback) {
+                data.save(callback);
+            }, function (callback) {
+                if (status[index + 1] == "winner") {
+                    Player.showWinner({
+                        tableId: tableId
+                    }, callback)
+                } else {
+                    callback(null);
+                }
+            }], callback);
+        });
+    },
+
+
 
 
 

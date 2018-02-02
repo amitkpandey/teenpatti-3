@@ -16,6 +16,12 @@ loosingAmt: {
         default: 0
     },
 
+winningAmt: {
+        type: Number,
+        default: 0
+    },
+
+
     amtToPlay: {
         type: Number,
         default: 0

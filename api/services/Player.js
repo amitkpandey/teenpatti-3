@@ -75,12 +75,7 @@ loosingAmt: {
         type: Schema.Types.ObjectId,
         ref: 'Table'
     },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    },
-
-
+    
     totalAmount: {
         type: Number,
         default: 0
@@ -118,13 +113,16 @@ schema.plugin(deepPopulate, {
     populate: {
         'cards': {
             select: 'name _id'
+        },
+        'table': {
+            select: '_id'
         }
     }
 });
 schema.plugin(uniqueValidator);
 schema.plugin(timestamps);
 module.exports = mongoose.model('Player', schema);
-var exports = _.cloneDeep(require("sails-wohlig-service")(schema, "cards", "cards"));
+var exports = _.cloneDeep(require("sails-wohlig-service")(schema, "cards", "cards","table","table"));
 
 var model = {
     addPlayer: function (data, callback) {

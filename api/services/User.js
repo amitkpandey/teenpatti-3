@@ -171,6 +171,37 @@ var model = {
      */
     getAllMedia: function (data, callback) {
 
-    }
+    },
+
+
+
+    //request
+
+// var request = require('request');
+
+
+requestSend: function (data,callback) {
+var url="http://192.168.1.129:1337";
+
+    var options = {
+        method: 'post',
+        json: true,
+        url: url + "/api/Member/getAccessLevel",
+        body: {
+"accessToken":"Cicwy0TGGN2ANtVw"
+        }
+};
+
+    request(
+        options,
+        function (err, httpResponse, body) {
+            // console.log("http call")
+            // console.log("err",err);
+            // console.log("httpResponse",httpResponse);
+            console.log("body",body);
+
+        });
+    },
+
 };
 module.exports = _.assign(module.exports, exports, model);

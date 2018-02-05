@@ -14,6 +14,9 @@ var controller = {
         console.log("inside makePlayerInactive", req.body);
         Table.makePlayerInactive(req.body, res.callback);  
     },
+changeStatus: function (req, res) {
+        Table.changeStatus(req.body, res.callback);
+    },
 
 
 

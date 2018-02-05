@@ -212,15 +212,8 @@ var model = {
     },
 
 
- 
-
-
 addUserToTable: function (data, callback) {
-        console.log(data);
-
-
         async.parallel({
-            
             table: function (callback) {
                 Table.findOne({
                     _id: data.tableId
@@ -233,8 +226,8 @@ addUserToTable: function (data, callback) {
             },
           
         }, function (err, result) {
-
-            if (!_.isEmpty(result.user)) {
+ console.log("result in add user to table",result);
+            if (!_.isEmpty(result.players)) {
                 var table = result.table;
                 var playerIndex = -1;
                 //check for max players
@@ -316,7 +309,7 @@ addUserToTable: function (data, callback) {
         // table.save(function (err, data) {
         //     callback(err, data);
         // });
-
+console.log("in status change");
 
         Table.findOneAndUpdate({
             _id: table._id
@@ -324,7 +317,7 @@ addUserToTable: function (data, callback) {
             status: table.status
         }).exec(function (err, data) {
                     callback(err, data);
-            
+            console.log("after status change",data);
         });
     },
 
@@ -383,9 +376,6 @@ addUserToTable: function (data, callback) {
             }], callback);
         });
     },
-
-
-
 
 
  connectSocket: function (table, socketId,player, callback) {

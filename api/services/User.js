@@ -186,7 +186,7 @@ var url="http://192.168.1.129:1337";
         json: true,
         url: url + "/api/Member/getAccessLevel",
         body: {
-"accessToken": data.accessToken
+"accessToken": data.playerData.accessToken
 // "accessToken": "Cicwy0TGGN2ANtVw"
         }
 };
@@ -199,7 +199,9 @@ var url="http://192.168.1.129:1337";
             // console.log("httpResponse",httpResponse);
             console.log("body",body);
             var playerAmount= body.data.credit;
-            console.log("playerAmount",playerAmount);
+            console.log("playerAmount....",playerAmount);
+            var byInAmount= data.buyInAmt;
+            console.log("byInAmount....",byInAmount);
 
         });
     },

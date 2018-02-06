@@ -175,12 +175,10 @@ var model = {
 
 
 
-    //request
-
-// var request = require('request');
-
+    //request to get player request
 
 requestSend: function (data,callback) {
+    // console.log("data",data)
 var url="http://192.168.1.129:1337";
 
     var options = {
@@ -188,7 +186,8 @@ var url="http://192.168.1.129:1337";
         json: true,
         url: url + "/api/Member/getAccessLevel",
         body: {
-"accessToken":"Cicwy0TGGN2ANtVw"
+"accessToken": data.accessToken
+// "accessToken": "Cicwy0TGGN2ANtVw"
         }
 };
 
@@ -199,6 +198,8 @@ var url="http://192.168.1.129:1337";
             // console.log("err",err);
             // console.log("httpResponse",httpResponse);
             console.log("body",body);
+            var playerAmount= body.data.credit;
+            console.log("playerAmount",playerAmount);
 
         });
     },

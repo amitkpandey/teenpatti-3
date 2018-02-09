@@ -4,8 +4,8 @@ var controller = {
  addUserToTable: function (req, res) {
         Table.addUserToTable(req.body, res.callback);
     },
-    getAllTable: function (req, res) {
-        Table.getAllTable(req.body, res.callback);
+    getAllTable: function (res) {
+        Table.getAllTable(res.callback);
     },
     removePlayer: function (req, res) {
         Table.removePlayer(req.body, res.callback);

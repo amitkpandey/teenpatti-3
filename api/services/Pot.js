@@ -32,9 +32,19 @@ module.exports = mongoose.model('Pot', schema);
 
 var exports = _.cloneDeep(require("sails-wohlig-service")(schema));
 var model = {
+
+
+    /**
+     * @function {function createPot}
+     * @param  {object} data     {palyer data, table data, pot amount}
+     * @param  {callback} callback {tableId of table to which player should be added}
+     * @return {type} {creates new pot for each game}
+     */
     createPot: function (data, callback) {
+        console.log("in savedata");
         var Model = this;
         Model.saveData(data, callback);
+        console.log("data after SaveData",data)
     },
     getMainPot: function (tableId, callback) {
         Pot.findOne({

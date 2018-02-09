@@ -79,10 +79,22 @@ module.exports = mongoose.model('Table', schema);
 var exports = _.cloneDeep(require("sails-wohlig-service")(schema,"activePlayer","activePlayer"));
 var model = {
 
-
- getAllTable: function (data, callback) {
+ /**
+  * @function {function getAllTable}
+  * @param  {callback} callback {function with err and response}
+  * @return {type} {all table data}
+  */
+ getAllTable: function (callback) {
         this.find({}).exec(callback);
     },
+
+
+    /**
+     * @function {function makePlayerInactive}
+     * @param  {type} data     {tableId and player data whom to make inactive}
+     * @param  {type} callback {function with err and response}
+     * @return {type} {makes player inactive}
+     */
     makePlayerInactive: function (data, callback) {
         async.parallel({
            
@@ -116,6 +128,15 @@ var model = {
             removerPlayer.save(callback);
         });
     },
+
+
+
+    /**
+     * @function {function removePlayer}
+     * @param  {type} data     {tableId and player data}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {removes player from that table}
+     */
     removePlayer: function (data, callback) {
         // console.log(data);
         async.parallel({
@@ -207,7 +228,12 @@ var model = {
         });
     },
 
-
+/**
+ * @function {function addUserToTable}
+ * @param  {type} data     {tableId of table to which player should be added}
+ * @param  {callback} callback {function with err and response}
+ * @return {type} {adds player to table}
+ */
 addUserToTable: function (data, callback) {
     console.log("data in addUserToTable",data);
         async.parallel({
@@ -298,7 +324,12 @@ addUserToTable: function (data, callback) {
        
     },
 
-
+  /**
+   * @function {function changeStatus}
+   * @param  {type} table    {table id}
+   * @param  {callback} callback {function with err and response}
+   * @return {type} {changes status of that particular table}
+   */
   changeStatus: function (table, callback) {
 console.log("in status change");
 
@@ -333,6 +364,16 @@ console.log("in status change");
         return curStatus;
 
     },
+
+
+
+
+    /**
+     * @function {function updateStatus}
+     * @param  {ObjectId} tableId  {table id of table whose status is to be changed}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {updates table status}
+     */
     updateStatus: function (tableId, callback) {
         console.log("updateStatus ", tableId);
         var status = [

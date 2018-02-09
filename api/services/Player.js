@@ -131,6 +131,13 @@ module.exports = mongoose.model('Player', schema);
 var exports = _.cloneDeep(require("sails-wohlig-service")(schema, "cards", "cards", "table", "table"));
 
 var model = {
+
+    /**
+     * @function {function addPlayer}
+     * @param  {object} data     {playerdata}
+     * @param  {callback} callback {function with err and response}
+     * @return  {new player data}
+     */
     addPlayer: function (data, callback) {
         Player.saveData(data, function (err, data2) {
             console.log("data..............", data);
@@ -143,6 +150,13 @@ var model = {
             }
         });
     },
+
+    /**
+     * @function {function updatePlayer}
+     * @param  {object} data     {playerNo,field to be modified}
+     * @param  {callback} callback {function with err and response}
+     * @return  {updated player data}
+     */
     updatePlayer: function (data, callback) {
 
         var playerData = _.clone(data, true);
@@ -160,6 +174,12 @@ var model = {
             }
         });
     },
+
+    /**
+     * @function {function deletePlayer}
+     * @param  {object} data     {data of player to be deleted}
+     * @param  {callback} callback {function with err and response}
+     */
     deletePlayer: function (data, callback) {
         Player.findOne({
             "playerNo": data.playerNo
@@ -245,7 +265,11 @@ var model = {
 
     },
 
-
+    /**
+     * @function {function newGame}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {flush gamelogs and creates new game}
+     */
     newGame: function (data, callback) {
         var Model = this;
         async.waterfall([
@@ -342,8 +366,13 @@ var model = {
         readLastValue = "";
         cardServed = false;
     },
+    /**
+     * @function {function makeDealer}
+     * @param  {type} data     {player data}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {creates new dealer}
+     */
     makeDealer: function (data, callback) {
-        console.log("data in dealre", data);
         var Model = Player;
         async.waterfall([
             function (callback) {
@@ -359,14 +388,12 @@ var model = {
                 Player.find({
                     isActive: true
                 }).exec(function (err, players) {
-                    console.log("palyers@@@@@@@@", players)
                     if (err) {
                         console.log("in if")
                         callback(err);
                     } else {
                         console.log("in else")
                         var playerIndex = _.findIndex(players, function (player) {
-                            console.log("palyerIndex@@@@@@@@", playerIndex)
                             return player.playerNo == parseInt(data.tabId);
                         });
                         if (playerIndex >= 0) {
@@ -396,6 +423,14 @@ var model = {
             }
         ], callback);
     },
+
+
+    /**
+     * @function {function removeDealer}
+     * @param  {type} data     {player data}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {remove player as a dealer}
+     */
     removeDealer: function (data, callback) {
         var Model = this;
         Model.findOneAndUpdate({
@@ -628,10 +663,12 @@ var model = {
 
     //     },
 
-
-
-
-
+    /**
+     * @function {function checkDealer}
+     * @param  {type} tableId  {id of table for which dealer to be checked}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {dealer data}
+     */
     checkDealer: function (tableId, callback) {
         Player.findOne({
             isActive: true,
@@ -643,7 +680,12 @@ var model = {
 
 
 
-
+    /**
+     * @function {function makeSeen}
+     * @param  {object} data     {data of player}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {makes player's isBlind false}
+     */
     makeSeen: function (data, callback) {
         var Model = this;
         var cond = {};
@@ -746,6 +788,12 @@ var model = {
             Player.changeTurn
         ], callback);
     },
+
+
+    /**
+     * @function {function doSideShow}
+     * @param  {callback} callback {function with err and response}
+     */
     doSideShow: function (callback) {
 
         async.waterfall([
@@ -969,6 +1017,15 @@ var model = {
             }
         ], callback);
     },
+
+
+
+
+    /**
+     * @function {function currentTurn}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {player whose isTurn is true}
+     */
     currentTurn: function (callback) {
         Player.findOne({
             isTurn: true
@@ -1189,6 +1246,14 @@ var model = {
             Player.changeTurn
         ], callback);
     },
+
+
+    /**
+     * @function {function fold}
+     * @param  {object} data     {data of player whom to fold}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {folds that particular player}
+     */
     fold: function (data, callback) {
         async.waterfall([
             Player.currentTurn,
@@ -1370,8 +1435,13 @@ var model = {
     },
 
 
-    //for cards serve//
-
+ 
+    /**
+     * @function {function serve}
+     * @param  {type} data     {description}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {serve cards to all players}
+     */
     serve: function (data, callback) {
         async.parallel({
             players: function (callback) {
@@ -1389,7 +1459,7 @@ var model = {
             var palyers = response.players;
             var dealerNo = 1;
             var maxCardsPerPlayer = 3;
-var maxCards = [1,2,3];
+            var maxCards = [1, 2, 3];
 
             // check whether no of players are greater than 1
             if (playerCount <= 1) {
@@ -1413,17 +1483,17 @@ var maxCards = [1,2,3];
             ];
 
             // _.each(cardArr, function (card) {
-                _.each(palyers, function (player) {
-                    _.each(maxCards, function (maxCard) {
-                  var card1 = cardArr[_.random(0, cardArr.length)];
+            _.each(palyers, function (player) {
+                _.each(maxCards, function (maxCard) {
+                    var card1 = cardArr[_.random(0, cardArr.length)];
                     player.cards.push(card1);
                     console.log("player.cards.......", player.cards)
                     var index = _.indexOf(cardArr, card1);
                     cardArr.splice(index, 1);
                 });
             });
-callback(palyers);
-console.log("players",palyers);
+            callback(palyers);
+            console.log("players", palyers);
 
         });
     }

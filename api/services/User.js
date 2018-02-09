@@ -175,8 +175,13 @@ var model = {
 
 
 
-    //request to get player request
 
+/**
+ * @function {function requestSend}
+ * @param  {object} data     {body data}
+ * @param  {callback} callback {description}
+ * @return {type} {description}
+ */
 requestSend: function (data,callback) {
     // console.log("data",data)
 var url="http://192.168.1.129:1337";

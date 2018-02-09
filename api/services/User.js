@@ -199,11 +199,15 @@ var url="http://192.168.1.129:1337";
             // console.log("httpResponse",httpResponse);
             console.log("body",body);
             var playerAmount= body.data.credit;
-            console.log("playerAmount....",playerAmount);
+            // console.log("playerAmount....",playerAmount);
             var byInAmount= data.buyInAmt;
-            console.log("byInAmount....",byInAmount);
+            // console.log("byInAmount....",byInAmount);
+              var accessT= body.data.accessToken;
+            console.log("accessT....",accessT);
+
 
         });
+        callback();
     },
 
 };

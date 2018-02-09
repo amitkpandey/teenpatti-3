@@ -87,10 +87,13 @@ var controller = {
         Player.doSideShow(res.callback);
     },
     cancelSideShow: function(req, res){
-        Player.cancelSideShow(res.callback);
+        Player.cancelSideShow(res.callback)
     },
     sideShow: function (req, res) {
         Player.sideShow(res.callback);
+    },
+    checkDealer: function (req, res){
+        Player.checkDealer(req.body, res.callback);
     },
     randomServe: function (req, res) {
         if (envType != "production") {

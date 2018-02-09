@@ -17,6 +17,9 @@ var controller = {
 changeStatus: function (req, res) {
         Table.changeStatus(req.body, res.callback);
     },
+    connectSocket: function (req, res) {
+        Table.connectSocket(req.body, res.callback);
+    },
 
 
 

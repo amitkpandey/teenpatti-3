@@ -65,10 +65,6 @@ var schema = new Schema({
         }
     }]
 
-
-
-
-
 });
 
 schema.plugin(deepPopulate, {
@@ -213,6 +209,7 @@ var model = {
 
 
 addUserToTable: function (data, callback) {
+    console.log("data in addUserToTable",data);
         async.parallel({
             table: function (callback) {
                 Table.findOne({
@@ -241,13 +238,12 @@ addUserToTable: function (data, callback) {
                     return 0;
                 }
 
-                playerIndex = _.findIndex(result.players, function (p) {
+                playerIndex = _.findIndex(result.user, function (p) {
+                    console.log("p",p);
                     return (p.user + "" == user._id + "" && p.table + "" == data.tableId + "");
                 });
-                console.log(playerAdded);
-            
-
-                console.log("playerIndex ", playerIndex);
+                console.log("playerAdded");
+                // console.log("playerIndex ", playerIndex);
                 //already exists
                 if (playerIndex >= 0) {
                     console.log("Player Already Added");
@@ -304,11 +300,6 @@ addUserToTable: function (data, callback) {
 
 
   changeStatus: function (table, callback) {
-        // table = new this(table);
-        // console.log("inside changeStatus");
-        // table.save(function (err, data) {
-        //     callback(err, data);
-        // });
 console.log("in status change");
 
         Table.findOneAndUpdate({
@@ -327,10 +318,7 @@ console.log("in status change");
         var status = [
             'beforeStart',
             'serve',
-            'preFlop',
-            'Flop',
             'Turn',
-            'River',
             'winner'
         ];
 

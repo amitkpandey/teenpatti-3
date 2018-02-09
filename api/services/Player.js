@@ -1422,7 +1422,7 @@ var maxCards = [1,2,3];
                     cardArr.splice(index, 1);
                 });
             });
-
+callback(palyers);
 console.log("players",palyers);
 
         });

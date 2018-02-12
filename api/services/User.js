@@ -208,7 +208,7 @@ var url="http://192.168.1.129:1337";
             var byInAmount= data.buyInAmt;
             // console.log("byInAmount....",byInAmount);
               var accessT= body.data.accessToken;
-            console.log("accessT....",accessT);
+            // console.log("accessT....",accessT);
 
 
         });

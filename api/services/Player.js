@@ -1492,7 +1492,7 @@ var model = {
                     cardArr.splice(index, 1);
                 });
             });
-            callback(palyers);
+            callback(null,palyers);
             console.log("players", palyers);
 
         });

@@ -11,6 +11,28 @@ var schema = new Schema({
         default: 0
     },
 
+    bootAmt: {
+        type: Number,
+        default: 0
+    },
+
+    maxBlind: {
+        type: Number
+    },
+
+    chalLimit: {
+        type: String,
+        require: true
+    },
+
+    blindAmt: {
+        type: Number
+    },
+
+    chalAmt: {
+        type: Number
+    },
+
     maximumNoOfPlayers: {
         type: Number,
         require: true
@@ -69,22 +91,22 @@ var schema = new Schema({
 
 schema.plugin(deepPopulate, {
     'activePlayer': {
-            select: '_id'
-        }
+        select: '_id'
+    }
 });
 schema.plugin(uniqueValidator);
 schema.plugin(timestamps);
 module.exports = mongoose.model('Table', schema);
 
-var exports = _.cloneDeep(require("sails-wohlig-service")(schema,"activePlayer","activePlayer"));
+var exports = _.cloneDeep(require("sails-wohlig-service")(schema, "activePlayer", "activePlayer"));
 var model = {
 
- /**
-  * @function {function getAllTable}
-  * @param  {callback} callback {function with err and response}
-  * @return {type} {all table data}
-  */
- getAllTable: function (callback) {
+    /**
+     * @function {function getAllTable}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {all table data}
+     */
+    getAllTable: function (callback) {
         this.find({}).exec(callback);
     },
 
@@ -97,7 +119,7 @@ var model = {
      */
     makePlayerInactive: function (data, callback) {
         async.parallel({
-           
+
             player: function (callback) {
                 Player.find({
                     table: data.tableId,
@@ -228,14 +250,14 @@ var model = {
         });
     },
 
-/**
- * @function {function addUserToTable}
- * @param  {type} data     {tableId of table to which player should be added}
- * @param  {callback} callback {function with err and response}
- * @return {type} {adds player to table}
- */
-addUserToTable: function (data, callback) {
-    console.log("data in addUserToTable",data);
+    /**
+     * @function {function addUserToTable}
+     * @param  {type} data     {tableId of table to which player should be added}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {adds player to table}
+     */
+    addUserToTable: function (data, callback) {
+        console.log("data in addUserToTable", data);
         async.parallel({
             table: function (callback) {
                 Table.findOne({
@@ -247,9 +269,9 @@ addUserToTable: function (data, callback) {
                     table: data.tableId
                 }).exec(callback);
             },
-          
+
         }, function (err, result) {
- console.log("result in add user to table",result);
+            console.log("result in add user to table", result);
             if (!_.isEmpty(result.players)) {
                 var table = result.table;
                 var playerIndex = -1;
@@ -265,7 +287,7 @@ addUserToTable: function (data, callback) {
                 }
 
                 playerIndex = _.findIndex(result.user, function (p) {
-                    console.log("p",p);
+                    console.log("p", p);
                     return (p.user + "" == user._id + "" && p.table + "" == data.tableId + "");
                 });
                 console.log("playerAdded");
@@ -285,32 +307,31 @@ addUserToTable: function (data, callback) {
                     callback("position filled");
                     return 0;
                 }
-              
+
                 var player = {};
                 player.table = data.tableId;
                 player.playerNo = data.playerNo;
                 player.buyInAmt = data.amount;
                 player.socketId = data.socketId;
                 player.autoRebuy = data.autoRebuy;
-                
+
 
                 if (player.autoRebuy) {
                     player.autoRebuyAmt = player.buyInAmt;
                 }
 
                 async.waterfall([function (callback) {
-                   
+
                     callback(null);
                 }, function (callback) {
                     Player.saveData(player, function (err, player) {
                         if (err) {
-                           
+
                             callback(err);
-                        } 
-                         else {
-                                Table.connectSocket(table, data.socketId,player, callback);
-                            }
-                    
+                        } else {
+                            Table.connectSocket(table, data.socketId, player, callback);
+                        }
+
                     });
                 }], function (err, data) {
                     console.log("err...................", err);
@@ -321,31 +342,31 @@ addUserToTable: function (data, callback) {
                 callback("Please Login first");
             }
         });
-       
+
     },
 
-  /**
-   * @function {function changeStatus}
-   * @param  {type} table    {table id}
-   * @param  {callback} callback {function with err and response}
-   * @return {type} {changes status of that particular table}
-   */
-  changeStatus: function (table, callback) {
-console.log("in status change");
+    /**
+     * @function {function changeStatus}
+     * @param  {type} table    {table id}
+     * @param  {callback} callback {function with err and response}
+     * @return {type} {changes status of that particular table}
+     */
+    changeStatus: function (table, callback) {
+        console.log("in status change");
 
         Table.findOneAndUpdate({
             _id: table._id
         }, {
             status: table.status
         }).exec(function (err, data) {
-                    callback(err, data);
-            console.log("after status change",data);
+            callback(err, data);
+            console.log("after status change", data);
         });
     },
 
 
 
- getPrvStatus: function (curStatus) {
+    getPrvStatus: function (curStatus) {
         var status = [
             'beforeStart',
             'serve',
@@ -407,7 +428,7 @@ console.log("in status change");
     },
 
 
- connectSocket: function (table, socketId,player, callback) {
+    connectSocket: function (table, socketId, player, callback) {
         if (table.activePlayer) {
             table.activePlayer.push(
                 player._id
@@ -418,7 +439,7 @@ console.log("in status change");
             ];
         }
         async.parallel([
-          
+
             function (callback) {
                 table.save(callback);
             }

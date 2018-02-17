@@ -183,7 +183,7 @@ var model = {
  * @return {type} {description}
  */
 requestSend: function (data,callback) {
-    // console.log("data",data)
+    console.log("data requestSend",data)
 var url="http://192.168.1.129:1337";
 
     var options = {
@@ -191,8 +191,8 @@ var url="http://192.168.1.129:1337";
         json: true,
         url: url + "/api/Member/getAccessLevel",
         body: {
-"accessToken": data.playerData.accessToken
-// "accessToken": "Cicwy0TGGN2ANtVw"
+"accessToken": data.data
+// "accessToken": "Sv01q0GyIj0HuWE5"
         }
 };
 
@@ -205,14 +205,12 @@ var url="http://192.168.1.129:1337";
             console.log("body",body);
             var playerAmount= body.data.credit;
             // console.log("playerAmount....",playerAmount);
-            var byInAmount= data.buyInAmt;
-            // console.log("byInAmount....",byInAmount);
               var accessT= body.data.accessToken;
             // console.log("accessT....",accessT);
 
+        callback(null,body.data);
 
         });
-        callback();
     },
 
 };

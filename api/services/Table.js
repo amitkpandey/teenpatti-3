@@ -264,6 +264,7 @@ var model = {
                     _id: data.tableId
                 }).exec(callback);
             },
+
             players: function (callback) {
                 Player.find({
                     table: data.tableId
@@ -272,7 +273,7 @@ var model = {
 
         }, function (err, result) {
             console.log("result in add user to table", result);
-            if (!_.isEmpty(result.players)) {
+            if (!_.isEmpty(result.table)) {
                 var table = result.table;
                 var playerIndex = -1;
                 //check for max players
@@ -311,9 +312,9 @@ var model = {
                 var player = {};
                 player.table = data.tableId;
                 player.playerNo = data.playerNo;
-                player.buyInAmt = data.amount;
-                player.socketId = data.socketId;
-                player.autoRebuy = data.autoRebuy;
+                player.totalAmount = data.totalAmount;
+                // player.socketId = data.socketId;
+                // player.autoRebuy = data.autoRebuy;
 
 
                 if (player.autoRebuy) {
@@ -334,7 +335,8 @@ var model = {
 
                     });
                 }], function (err, data) {
-                    console.log("err...................", err);
+                    // console.log("err...................", err);
+                    console.log("data...................", data);
                     callback(err, data)
                 });
             } else {
@@ -454,6 +456,39 @@ var model = {
                 // });
                 Table.blastAddPlayerSocket(table._id);
                 callback(err, player);
+            }
+        });
+    },
+
+
+     blastAddPlayerSocket: function (tableId, extraData) {
+        Player.getAllDetails({
+            tableId: tableId
+        }, function (err, allData) {
+            // if (!fromUndo) {
+            //     GameLogs.create(function () {});
+            // } else {
+            //     allData.undo = true;
+            // }
+            // if (data && data.newGame) {
+            //     allData.newGame = true;
+            // }
+
+            if (err) {
+                console.log(err);
+            } else {
+                if (extraData) {
+                    allData.extra = extraData;
+                } else {
+                    allData.extra = {};
+                }
+                //console.log(allData);
+                sails.sockets.blast("seatSelection", {
+                    data: allData
+                });
+                // sails.sockets.broadcast("room" + tableId, "Update", {
+                //     data: allData
+                // });
             }
         });
     },

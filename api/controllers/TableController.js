@@ -21,7 +21,9 @@ changeStatus: function (req, res) {
         Table.connectSocket(req.body, res.callback);
     },
 
-
+blastAddPlayerSocket:function (req, res) {
+        Table.connectSocket(req.body, res.callback);
+    },
 
 };
 module.exports = _.assign(module.exports, controller);

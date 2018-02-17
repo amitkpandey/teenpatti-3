@@ -247,6 +247,217 @@ var model = {
             }
         });
     },
+
+
+getAllDetails: function (data, callback, newGameCheck = false) {
+        var tableId = data.tableId;
+        console.log(data);
+        if (!tableId) {
+            callback("Invaid Request");
+            return 0;
+        }
+        var requiredData = Player.requiredData();
+        async.parallel({
+            players: function (callback) {
+                var filter = {};
+                if (newGameCheck) {
+                    filter = {
+                        table: tableId,
+                        tableLeft: false
+                    }
+                } else {
+                    filter = {
+                        table: tableId
+                    }
+                }
+                Player.find(filter, requiredData.player).deepPopulate("user").lean().exec(callback);
+
+            },
+            communityCards: function (callback) {
+                CommunityCards.find({
+                    table: tableId
+                }, requiredData.communityCards).sort({
+                    cardNo: 1
+                }).exec(callback);
+            },
+            pots: function (callback) {
+                Pot.find({
+                    table: tableId
+                }, requiredData.pot).sort({
+                    _id: 1
+                }).lean().exec(callback);
+            },
+            
+            table: function (callback) {
+                Table.findOne({
+                    _id: tableId
+                }, requiredData.table).exec(callback);
+            },
+            extra: function (callback) { //to have same format required by the frontend
+                callback(null, {});
+            }
+        }, function (err, allData) {
+            if (err) {
+                callback(err);
+            } else {
+                _.each(allData.pots, function (p, key) {
+                    p['no'] = key + 1;
+                });
+
+                if (allData.table.status == 'beforeStart') {
+                    _.remove(allData.players, function (p) {
+                        return p.tableLeft;
+                    });
+                }
+
+                _.each(allData.pots, function (p, key) {
+                    if (key == 0) {
+                        p['name'] = 'Main rsPot'
+                    } else {
+                        p['name'] = 'Side Pot ' + key;
+                    }
+                });
+
+                _.each(allData.players, function (p) {
+                    allData.players.winPots = [];
+                    _.each(allData.pots, function (pot) {
+                        var winIndex = -1
+                        if (pot.winner && !_.isEmpty(pot.winner)) {
+                            winIndex = _.findIndex(pot.winner, function (w) {
+                                return w.winner && w.playerNo == p.playerNo;
+                            });
+                            if (winIndex >= 0) {
+                                allData.players.winPots.push(p.no);
+                            }
+                            _.remove(pot.winner, function (w) {
+                                return !pot.winner
+                            });
+                        }
+                    })
+
+
+                });
+                // Pot.solveInfo(allData, function (err, data) {
+                //     // console.log("inside allData");
+                //     if (err) {
+                //         //  console.log("inside allData err", err);
+                //         callback(null, allData);
+                //     } else {
+
+                //         if (!_.isEmpty(data.currentPlayer)) {
+
+                //             //enable or disable buttons depending on conditions
+                //             var totalRoundAmount = 0;
+                //             var remainingBalance = data.currentPlayer.buyInAmt - data.currentPlayer.totalAmount;
+                //             allData.isChecked = false;
+                //             allData.isCalled = false;
+                //             allData.isRaised = false;
+                //             allData.fromRaised = 0;
+                //             allData.toRaised = 0;
+                //             if (data.callAmount <= 0) {
+                //                 allData.isChecked = true;
+                //             }
+
+                //             _.each(data.pots, function (p) {
+                //                 totalRoundAmount += p.potMaxLimit;
+                //             });
+
+                //             var maxAmountObj = _.maxBy(allData.table.currentRoundAmt, "amount");
+                //             if (!maxAmountObj && _.isEmpty(maxAmountObj)) {
+                //                 maxAmount = 0;
+                //             } else {
+                //                 maxAmount = maxAmountObj.amount;
+                //             }
+                //             allData.fromRaised = maxAmount + 100;
+                //             if (maxAmount == 0) {
+                //                 allData.fromRaised = allData.table.bigBlind;
+                //             }
+                //             // console.log("allData.fromRaised", allData.fromRaised);
+
+
+                //             // console.log("remainingBalance", remainingBalance);
+                //             // console.log("data.payableAmt", data.payableAmt);
+                //             if (remainingBalance >= data.callAmount && !allData.isChecked) {
+                //                 allData.isCalled = true;
+                //             }
+
+                //             allData.toRaised = remainingBalance;
+
+                //             if (allData.toRaised > data.allInAmount) {
+                //                 allData.toRaised = data.allInAmount;
+                //             }
+
+                //             if (remainingBalance >= allData.fromRaised && allData.fromRaised < allData.toRaised) {
+                //                 allData.isRaised = true;
+                //             }
+                //             // allData.isRaised = true;
+                //             delete allData.tableStatus;
+                //             delete allData.currentPlayer;
+                //             delete allData.callAmount;
+                //             delete allData.allInAmount;
+                //             callback(null, allData);
+                //         } else {
+                //             callback(null, allData);
+                //         }
+                //     }
+
+                // });
+            }
+            //send isckecked and raise amount( from to end)   
+        });
+    },
+
+
+requiredData: function () {
+        var data = {};
+        data.table = {
+            minimumBuyin: 1,
+            smallBlind: 1,
+            bigBlind: 1,
+            name: 1,
+            maximumNoOfPlayers: 1,
+            status: 1,
+            currentRoundAmt: 1,
+            timeoutTime: 1
+        };
+        data.player = {
+            playerNo: 1,
+            socketId: 1,
+            hasRaised: 1,
+            buyInAmt: 1,
+            hasTurnCompleted: 1,
+            isSmallBlind: 1,
+            isBigBlind: 1,
+            totalAmount: 1,
+            hasCalled: 1,
+            hasChecked: 1,
+            isAllIn: 1,
+            cards: 1,
+            isDealer: 1,
+            isFold: 1,
+            isActive: 1,
+            isTurn: 1,
+            isLastBlind: 1,
+            user: 1,
+            tableLeft: 1
+        };
+
+        data.communityCards = {
+            cardNo: 1,
+            isBurn: 1,
+            cardValue: 1,
+            serve: 1
+        };
+
+        data.pot = {
+            totalAmount: 1,
+            players: 1,
+            type: 1,
+            winner: 1
+        };
+        return data;
+    },
+
     getTabDetail: function (data, callback) {
         async.parallel({
             playerCards: function (callback) {

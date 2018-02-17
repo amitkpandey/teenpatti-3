@@ -2,14 +2,21 @@ var schema = new Schema({
     playerNo: {
         type: Number,
         required: true,
-        unique: true,
-        // excel: true,
+        unique: true
     },
+
+    playerId: {
+        type: String
+    },
+
     buyInAmt: {
         type: Number,
         default: 0
     },
 
+    sitNummber: {
+        type: Number
+    },
 
     loosingAmt: {
         type: Number,
@@ -60,12 +67,6 @@ var schema = new Schema({
     },
 
     hasTurnCompleted: {
-        type: Boolean,
-        default: false
-    },
-
-
-    isAllIn: {
         type: Boolean,
         default: false
     },
@@ -1435,7 +1436,7 @@ var model = {
     },
 
 
- 
+
     /**
      * @function {function serve}
      * @param  {type} data     {description}
@@ -1492,7 +1493,7 @@ var model = {
                     cardArr.splice(index, 1);
                 });
             });
-            callback(null,palyers);
+            callback(null, palyers);
             console.log("players", palyers);
 
         });

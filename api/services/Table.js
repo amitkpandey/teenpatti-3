@@ -257,7 +257,6 @@ var model = {
      * @return {type} {adds player to table}
      */
     addUserToTable: function (data, callback) {
-        console.log("data in addUserToTable", data);
         async.parallel({
             table: function (callback) {
                 Table.findOne({
@@ -277,34 +276,37 @@ var model = {
                 var table = result.table;
                 var playerIndex = -1;
                 //check for max players
-                if (table.activePlayer && table.activePlayer.length == table.maximumNoOfPlayers) {
+                if (table.activePlayer.length == table.maximumNoOfPlayers) {
                     callback("Room Not Available");
+                    console.log("no sit available");
                     return 0;
                 }
 
+                //invalid player data
                 if (!data.playerNo && parseInt(data.amount) == NaN) {
                     callback("Invalid data");
+                    console.log("invalid data")
                     return 0;
                 }
 
-                playerIndex = _.findIndex(result.user, function (p) {
-                    console.log("p", p);
-                    return (p.user + "" == user._id + "" && p.table + "" == data.tableId + "");
-                });
-                console.log("playerAdded");
-                // console.log("playerIndex ", playerIndex);
                 //already exists
+                playerIndex = _.findIndex(result.players, function (p) {
+                    return (p.memberId == data.memberId);
+                });
+
                 if (playerIndex >= 0) {
                     console.log("Player Already Added");
                     callback("Player Already Added");
                     return 0;
                 }
 
+                //position filled
                 var positionFilled = _.findIndex(result.players, function (p) {
                     return p.playerNo == data.playerNo;
                 });
 
                 if (positionFilled >= 0) {
+                    console.log("position already filled")
                     callback("position filled");
                     return 0;
                 }
@@ -313,6 +315,8 @@ var model = {
                 player.table = data.tableId;
                 player.playerNo = data.playerNo;
                 player.totalAmount = data.totalAmount;
+                player.sitNummber = data.sitNummber;
+                player.memberId = data.memberId;
                 // player.socketId = data.socketId;
                 // player.autoRebuy = data.autoRebuy;
 
@@ -461,7 +465,7 @@ var model = {
     },
 
 
-     blastAddPlayerSocket: function (tableId, extraData) {
+    blastAddPlayerSocket: function (tableId, extraData) {
         Player.getAllDetails({
             tableId: tableId
         }, function (err, allData) {

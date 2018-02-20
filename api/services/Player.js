@@ -9,6 +9,10 @@ var schema = new Schema({
         type: String
     },
 
+    memberId: {
+        type: String
+    },
+
     buyInAmt: {
         type: Number,
         default: 0

@@ -5,6 +5,10 @@ var schema = new Schema({
         unique: true
     },
 
+    image:{
+        type: String
+    },
+
     playerId: {
         type: String
     },

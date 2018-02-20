@@ -317,6 +317,7 @@ var model = {
                 player.totalAmount = data.totalAmount;
                 player.sitNummber = data.sitNummber;
                 player.memberId = data.memberId;
+                player.image = data.image;
                 // player.socketId = data.socketId;
                 // player.autoRebuy = data.autoRebuy;
 

@@ -499,9 +499,51 @@ var model = {
     },
 
 
+    /**
+     * @function {function getAllActiveOfTables}
+     * @param  {type} data    
+     * @param  {type} callback {function with err and response}
+     * @return {type} {active players in all table with id}
+     */
+    getAllActiveOfTables: function (data, callback) {
+        var activePlayer = {};
+        async.parallel({
+            activePlayer: function (callback) {
+                Table.find({}, {
+                    activePlayer: 1
+                }).exec(callback);
+            },
+        }, function (err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(err, data);
+            }
+        });
+    },
 
 
-
+    /**
+     * @function {function getAllActive}
+     * @param  {type} data     {tableid}
+     * @param  {type} callback {function with err and response}
+     * @return {type} {activePlayer of particular table}
+     */
+    getAllActive: function (data, callback) {
+        async.parallel({
+            table: function (callback) {
+                Table.findOne({
+                    _id: data.tableId
+                }).exec(callback);
+            }
+        }, function (err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, data.table.activePlayer);
+            }
+        });
+    },
 
 };
 module.exports = _.assign(module.exports, exports, model);

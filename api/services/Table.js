@@ -177,14 +177,14 @@ var model = {
             if (err) {
                 callback(err);
             } else {
-
+                
                 if (_.isEmpty(result.player) || _.isEmpty(result.table)) {
                     callback("Invalide Request");
                     return 0;
                 }
 
                 var removerPlayer = _.find(result.player, function (p) {
-                    return (result.user._id + "" == p.user + "");
+                    return (result.player._id + "" == p.player + "");
                 });
                 // var socketId = result.player.socketId;
                 if (!removerPlayer) {
@@ -249,6 +249,41 @@ var model = {
             }
         });
     },
+
+
+blastSocket: function (tableId, extraData, fromUndo) {
+        console.log(tableId);
+        console.log("inside blastSocket", extraData);
+        Player.getAllDetails({
+            tableId: tableId
+        }, function (err, allData) {
+            if (err) {
+                console.log(err);
+            } else {
+                if (!_.isEmpty(extraData)) {
+                    allData.extra = extraData;
+                } else {
+                    allData.extra = {};
+                }
+                console.log("allData.extra", allData.extra);
+
+                _.each(allData.players, function (p) {
+                    if (!p.tableLeft) {
+                        sails.sockets.broadcast(p.socketId, "Update", {
+                            data: allData
+                        });
+                    }
+                });
+                _.each(allData.dealer, function (d) {
+                    sails.sockets.broadcast(d.socketId, "Update", {
+                        data: allData
+                    });
+                });
+            }
+        });
+    },
+
+
 
     /**
      * @function {function addUserToTable}
@@ -332,7 +367,6 @@ var model = {
                 }, function (callback) {
                     Player.saveData(player, function (err, player) {
                         if (err) {
-
                             callback(err);
                         } else {
                             Table.connectSocket(table, data.socketId, player, callback);
@@ -340,12 +374,9 @@ var model = {
 
                     });
                 }], function (err, data) {
-                    // console.log("err...................", err);
-                    console.log("data...................", data);
                     callback(err, data)
                 });
             } else {
-                console.log("Please Login first");
                 callback("Please Login first");
             }
         });

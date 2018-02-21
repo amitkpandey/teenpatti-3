@@ -1,8 +1,7 @@
 var schema = new Schema({
     playerNo: {
         type: Number,
-        required: true,
-        unique: true
+        required: true
     },
 
     image:{
@@ -281,21 +280,6 @@ getAllDetails: function (data, callback, newGameCheck = false) {
                 Player.find(filter, requiredData.player).deepPopulate("user").lean().exec(callback);
 
             },
-            communityCards: function (callback) {
-                CommunityCards.find({
-                    table: tableId
-                }, requiredData.communityCards).sort({
-                    cardNo: 1
-                }).exec(callback);
-            },
-            pots: function (callback) {
-                Pot.find({
-                    table: tableId
-                }, requiredData.pot).sort({
-                    _id: 1
-                }).lean().exec(callback);
-            },
-            
             table: function (callback) {
                 Table.findOne({
                     _id: tableId
@@ -345,71 +329,6 @@ getAllDetails: function (data, callback, newGameCheck = false) {
 
 
                 });
-                // Pot.solveInfo(allData, function (err, data) {
-                //     // console.log("inside allData");
-                //     if (err) {
-                //         //  console.log("inside allData err", err);
-                //         callback(null, allData);
-                //     } else {
-
-                //         if (!_.isEmpty(data.currentPlayer)) {
-
-                //             //enable or disable buttons depending on conditions
-                //             var totalRoundAmount = 0;
-                //             var remainingBalance = data.currentPlayer.buyInAmt - data.currentPlayer.totalAmount;
-                //             allData.isChecked = false;
-                //             allData.isCalled = false;
-                //             allData.isRaised = false;
-                //             allData.fromRaised = 0;
-                //             allData.toRaised = 0;
-                //             if (data.callAmount <= 0) {
-                //                 allData.isChecked = true;
-                //             }
-
-                //             _.each(data.pots, function (p) {
-                //                 totalRoundAmount += p.potMaxLimit;
-                //             });
-
-                //             var maxAmountObj = _.maxBy(allData.table.currentRoundAmt, "amount");
-                //             if (!maxAmountObj && _.isEmpty(maxAmountObj)) {
-                //                 maxAmount = 0;
-                //             } else {
-                //                 maxAmount = maxAmountObj.amount;
-                //             }
-                //             allData.fromRaised = maxAmount + 100;
-                //             if (maxAmount == 0) {
-                //                 allData.fromRaised = allData.table.bigBlind;
-                //             }
-                //             // console.log("allData.fromRaised", allData.fromRaised);
-
-
-                //             // console.log("remainingBalance", remainingBalance);
-                //             // console.log("data.payableAmt", data.payableAmt);
-                //             if (remainingBalance >= data.callAmount && !allData.isChecked) {
-                //                 allData.isCalled = true;
-                //             }
-
-                //             allData.toRaised = remainingBalance;
-
-                //             if (allData.toRaised > data.allInAmount) {
-                //                 allData.toRaised = data.allInAmount;
-                //             }
-
-                //             if (remainingBalance >= allData.fromRaised && allData.fromRaised < allData.toRaised) {
-                //                 allData.isRaised = true;
-                //             }
-                //             // allData.isRaised = true;
-                //             delete allData.tableStatus;
-                //             delete allData.currentPlayer;
-                //             delete allData.callAmount;
-                //             delete allData.allInAmount;
-                //             callback(null, allData);
-                //         } else {
-                //             callback(null, allData);
-                //         }
-                //     }
-
-                // });
             }
             //send isckecked and raise amount( from to end)   
         });

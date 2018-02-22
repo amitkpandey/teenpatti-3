@@ -8,6 +8,10 @@ var schema = new Schema({
         type: String
     },
 
+    name:{
+        type: String
+    },
+
     playerId: {
         type: String
     },

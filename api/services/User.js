@@ -184,7 +184,7 @@ var model = {
  */
 requestSend: function (data,callback) {
     console.log("data requestSend",data)
-var url="http://192.168.1.129:1337";
+var url="http://192.168.1.134:1337";
 
     var options = {
         method: 'post',

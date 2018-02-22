@@ -353,6 +353,7 @@ blastSocket: function (tableId, extraData, fromUndo) {
                 player.sitNummber = data.sitNummber;
                 player.memberId = data.memberId;
                 player.image = data.image;
+                player.name = data.name;
                 // player.socketId = data.socketId;
                 // player.autoRebuy = data.autoRebuy;
 

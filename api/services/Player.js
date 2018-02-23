@@ -8,6 +8,10 @@ var schema = new Schema({
         type: String
     },
 
+    userType:{
+        type: String
+    },
+
     name:{
         type: String
     },
@@ -618,6 +622,24 @@ requiredData: function () {
             callback(err, CurrentTab);
         });
     },
+
+getByPlrNo: function (data, callback) {
+        Player.findOne({
+            sitNummber: data.data.sitNummber
+        }).exec(function (err, found) {
+            if (err) {
+                callback(err, null);
+            } else if (_.isEmpty(found)) {
+                callback(null, "noDataound");
+            } else {
+
+                callback(null, found);
+            }
+
+        });
+    },
+
+
 
     // serve: function (data, callback) {
     //     if (data.card && data.card.length == 2) {

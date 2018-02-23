@@ -50,6 +50,18 @@ var controller = {
     removeTab: function (req, res) {
         Player.removeTab(req.body, res.callback);
     },
+    getByPlrNo: function (req, res) {
+        if (req.body) {
+            Player.getByPlrNo(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: {
+                    message: "Invalid Request"
+                }
+            })
+        }
+    },
     fold: function (req, res) {
         Player.fold(req.body, res.callback);
     },

@@ -11,6 +11,10 @@ var schema = new Schema({
         default: 0
     },
 
+    tableShow: {
+        type: Number
+    },
+
     bootAmt: {
         type: Number,
         default: 0
@@ -355,6 +359,7 @@ blastSocket: function (tableId, extraData, fromUndo) {
                 player.image = data.image;
                 player.name = data.name;
                 player.userType = data.userType;
+                player.isActive=true;
                 // player.socketId = data.socketId;
                 // player.autoRebuy = data.autoRebuy;
 

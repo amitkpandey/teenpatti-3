@@ -533,15 +533,23 @@ var model = {
             },
             function (val, callback) {
                 Player.find({
-                    isActive: true
+                    isActive: true,
+                    table : data.data.tableId
                 }).exec(function (err, players) {
                     if (err) {
                         console.log("in if")
                         callback(err);
                     } else {
                         console.log("in else")
+                        console.log("plyrrrrr", players);
+
+                        var minPlayer = _.minBy(players, function (o) {
+                            return o.playerNo;
+                        });
+
+
                         var playerIndex = _.findIndex(players, function (player) {
-                            return player.playerNo == parseInt(data.tabId);
+                            return player.playerNo == minPlayer.playerNo;
                         });
                         if (playerIndex >= 0) {
                             async.parallel({
@@ -1656,9 +1664,9 @@ var model = {
             //     });
             // });
 
-            async.each(palyers, function (player, callback) { 
+            async.each(palyers, function (player, callback) {
                 player.cards = [];
-                async.each(maxCards, function (maxCard, callback1) { 
+                async.each(maxCards, function (maxCard, callback1) {
                     var card1 = cardArr[_.random(0, cardArr.length)];
                     player.cards.push(card1);
                     var index = _.indexOf(cardArr, card1);

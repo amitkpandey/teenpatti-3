@@ -4,15 +4,15 @@ var schema = new Schema({
         required: true
     },
 
-    image:{
+    image: {
         type: String
     },
 
-    userType:{
+    userType: {
         type: String
     },
 
-    name:{
+    name: {
         type: String
     },
 
@@ -264,7 +264,7 @@ var model = {
     },
 
 
-getAllDetails: function (data, callback, newGameCheck = false) {
+    getAllDetails: function (data, callback, newGameCheck = false) {
         var tableId = data.tableId;
         console.log(data);
         if (!tableId) {
@@ -343,7 +343,7 @@ getAllDetails: function (data, callback, newGameCheck = false) {
     },
 
 
-requiredData: function () {
+    requiredData: function () {
         var data = {};
         data.table = {
             minimumBuyin: 1,
@@ -623,7 +623,7 @@ requiredData: function () {
         });
     },
 
-getByPlrNo: function (data, callback) {
+    getByPlrNo: function (data, callback) {
         Player.findOne({
             sitNummber: data.data.sitNummber
         }).exec(function (err, found) {
@@ -1184,8 +1184,6 @@ getByPlrNo: function (data, callback) {
     },
 
 
-
-
     /**
      * @function {function currentTurn}
      * @param  {callback} callback {function with err and response}
@@ -1603,7 +1601,7 @@ getByPlrNo: function (data, callback) {
 
     /**
      * @function {function serve}
-     * @param  {type} data     {description}
+     * @param  {type} data     {players and tableId}
      * @param  {callback} callback {function with err and response}
      * @return {type} {serve cards to all players}
      */
@@ -1611,13 +1609,12 @@ getByPlrNo: function (data, callback) {
         async.parallel({
             players: function (callback) {
                 Player.find({
-                    isActive: true
+                    isActive: true,
+                    table: data.tableId
                 }).exec(callback);
-
             },
 
         }, function (err, response) {
-
             var allCards = [];
             var playerCards = [];
             var playerCount = response.players.length;
@@ -1629,37 +1626,64 @@ getByPlrNo: function (data, callback) {
             // check whether no of players are greater than 1
             if (playerCount <= 1) {
                 callback("Less Players - No of Players selected are too less");
+                console.log("Less Players - No of Players selected are too less");
                 return 0;
             }
 
             // check whether dealer is provided or not
             if (dealerNo < 0) {
                 callback("Dealer is not selected");
+                console.log("Dealer is not selected");
                 return 0;
             }
-            //for serving
 
+            //for serving
             // console.log("player count",playerCount);
-            // console.log("playerssssss",palyers);
+            // console.log("playerssssss", palyers);
 
             var cardArr = [
                 "As", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "Ts", "Js", "Qs", "Ks", "Ad", "2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "Td", "Jd", "Qd", "Kd", "Ac", "2c", "3c", "4c", "5c",
                 "6c", "7c", "8c", "9c", "Tc", "Jc", "Qc", "Kc", "Ah", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "Th", "Jh", "Qh", "Kh",
             ];
 
-            // _.each(cardArr, function (card) {
-            _.each(palyers, function (player) {
-                _.each(maxCards, function (maxCard) {
+            // _.each(palyers, function (player) {
+            //     _.each(maxCards, function (maxCard) {
+            //         var card1 = cardArr[_.random(0, cardArr.length)];
+            //         player.cards.push(card1);
+            //         console.log("player.cards.......", player.cards);
+            //         var index = _.indexOf(cardArr, card1);
+            //         cardArr.splice(index, 1);
+            //     });
+            // });
+
+            async.each(palyers, function (player, callback) { 
+                player.cards = [];
+                async.each(maxCards, function (maxCard, callback1) { 
                     var card1 = cardArr[_.random(0, cardArr.length)];
                     player.cards.push(card1);
-                    console.log("player.cards.......", player.cards)
                     var index = _.indexOf(cardArr, card1);
                     cardArr.splice(index, 1);
+                    callback1();
+                }, function (err) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        Player.saveData(player, function (err, data) {
+                            if (err) {
+                                callback(err, null);
+                            } else {
+                                callback(null, data);
+                            }
+                        })
+                    }
                 });
+            }, function (err) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, palyers);
+                }
             });
-            callback(null, palyers);
-            console.log("players", palyers);
-
         });
     }
 };

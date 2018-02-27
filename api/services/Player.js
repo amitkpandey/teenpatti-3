@@ -137,7 +137,7 @@ schema.plugin(deepPopulate, {
             select: 'name _id'
         },
         'table': {
-            select: '_id'
+            select: 'bootAmt'
         }
     }
 });
@@ -534,14 +534,14 @@ var model = {
             function (val, callback) {
                 Player.find({
                     isActive: true,
-                    table : data.data.tableId
+                    table: data.data.tableId
                 }).exec(function (err, players) {
                     if (err) {
                         console.log("in if")
                         callback(err);
                     } else {
-                        console.log("in else")
-                        console.log("plyrrrrr", players);
+                        // console.log("in else")
+                        // console.log("plyrrrrr", players);
 
                         var minPlayer = _.minBy(players, function (o) {
                             return o.playerNo;
@@ -1606,6 +1606,43 @@ var model = {
     },
 
 
+    deductBootAmount: function (data, callback) {
+        async.parallel({
+            players: function (callback) {
+                Player.find({
+                    isActive: true,
+                    table: data.data.tableId
+                }).deepPopulate("table").exec(callback);
+            },
+        }, function (err, response) {
+            if (err) {
+                console.log("err", err)
+            } else {
+                async.each(response.players, function (player, callback) {
+                    // console.log("player.....",player);
+                    // console.log("bbbbbb.........", player.table);
+                    player.totalAmount = player.totalAmount - player.table.bootAmt;
+                    Player.saveData(player, function (err, data) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, data);
+                        }
+                    })
+                }, function (err) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        console.log("in else.....")
+                        callback(null, response.players);
+                    }
+                });
+
+            }
+        });
+    },
+
+
 
     /**
      * @function {function serve}
@@ -1614,11 +1651,12 @@ var model = {
      * @return {type} {serve cards to all players}
      */
     serve: function (data, callback) {
+        console.log("data in serve......",data)
         async.parallel({
             players: function (callback) {
                 Player.find({
                     isActive: true,
-                    table: data.tableId
+                    table: data.data.tableId
                 }).exec(callback);
             },
 

@@ -71,6 +71,9 @@ var controller = {
     serve: function (req, res) {
         Player.serve(req.body, res.callback);
     },
+    deductBootAmount: function (req, res) {
+        Player.deductBootAmount(req.body, res.callback);
+    },
     revealCards: function (req, res) {
         Player.revealCards(req.body, res.callback);
     },

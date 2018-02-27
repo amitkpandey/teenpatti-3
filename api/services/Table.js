@@ -310,7 +310,7 @@ blastSocket: function (tableId, extraData, fromUndo) {
             },
 
         }, function (err, result) {
-            console.log("result in add user to table", result);
+            // console.log("result in add user to table", result);
             if (!_.isEmpty(result.table)) {
                 var table = result.table;
                 var playerIndex = -1;
@@ -335,7 +335,7 @@ blastSocket: function (tableId, extraData, fromUndo) {
 
                 if (playerIndex >= 0) {
                     console.log("Player Already Added");
-                    callback("Player Already Added");
+                    // callback("Player Already Added");
                     return 0;
                 }
 

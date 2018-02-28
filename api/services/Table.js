@@ -567,21 +567,44 @@ blastSocket: function (tableId, extraData, fromUndo) {
      * @param  {type} callback {function with err and response}
      * @return {type} {activePlayer of particular table}
      */
-    getAllActive: function (data, callback) {
-        async.parallel({
-            table: function (callback) {
+    // getAllActive: function (data, callback) {
+    //     async.parallel({
+    //         table: function (callback) {
+    //             Table.findOne({
+    //                 _id: data.tableId
+    //             }).select("activePlayer").exec(callback);
+    //         }
+    //     }, function (err, data) {
+    //         if (err) {
+    //             callback(err);
+    //         } else {
+    //             console.log("data........",data)
+    //             console.log("data........",data.table.activePlayer)
+    //             callback(null, data.table.activePlayer);
+    //         }
+    //     });
+    // },
+
+ getAllActive: function (data, callback) {
+        console.log("ddddd......",data)
                 Table.findOne({
                     _id: data.tableId
-                }).exec(callback);
-            }
-        }, function (err, data) {
+                }).exec(function (err, data) {
             if (err) {
                 callback(err);
             } else {
-                callback(null, data.table.activePlayer);
+                console.log("data........",data)
+                callback(null, data.activePlayer);
             }
-        });
-    },
+    });
+        },
+
+
+
+
+
+
+
 
 };
 module.exports = _.assign(module.exports, exports, model);

@@ -12,7 +12,7 @@ module.exports = mongoose.model('GameLogs', schema);
 var exports = _.cloneDeep(require("sails-wohlig-service")(schema));
 var model = {
     create: function (callback, removeLogs) {
-        console.log("removeLogs.......", removeLogs);
+        // console.log("removeLogs.......", removeLogs);
       //  var gameObject = GameLogs();
         // async.waterfall([
         //     function (callback) {
@@ -41,9 +41,9 @@ var model = {
         // ], callback);
         async.waterfall([
             function (callback) {
-                console.log("removeLogs1",removeLogs);
+                // console.log("removeLogs1",removeLogs);
                 removeLogs = removeLogs ? removeLogs : 0;
-                console.log("removeLogs2",removeLogs);
+                // console.log("removeLogs2",removeLogs);
                 async.times(removeLogs, function (n, next) {
                     GameLogs.findOne({}).sort({
                         _id: -1

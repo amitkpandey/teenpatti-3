@@ -50,6 +50,18 @@ var controller = {
     removeTab: function (req, res) {
         Player.removeTab(req.body, res.callback);
     },
+    getByPlrNo: function (req, res) {
+        if (req.body) {
+            Player.getByPlrNo(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: {
+                    message: "Invalid Request"
+                }
+            })
+        }
+    },
     fold: function (req, res) {
         Player.fold(req.body, res.callback);
     },
@@ -58,6 +70,9 @@ var controller = {
     },
     serve: function (req, res) {
         Player.serve(req.body, res.callback);
+    },
+    deductBootAmount: function (req, res) {
+        Player.deductBootAmount(req.body, res.callback);
     },
     revealCards: function (req, res) {
         Player.revealCards(req.body, res.callback);
@@ -87,10 +102,13 @@ var controller = {
         Player.doSideShow(res.callback);
     },
     cancelSideShow: function(req, res){
-        Player.cancelSideShow(res.callback);
+        Player.cancelSideShow(res.callback)
     },
     sideShow: function (req, res) {
         Player.sideShow(res.callback);
+    },
+    checkDealer: function (req, res){
+        Player.checkDealer(req.body, res.callback);
     },
     randomServe: function (req, res) {
         if (envType != "production") {

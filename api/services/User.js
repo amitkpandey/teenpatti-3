@@ -171,6 +171,47 @@ var model = {
      */
     getAllMedia: function (data, callback) {
 
-    }
+    },
+
+
+
+
+/**
+ * @function {function requestSend}
+ * @param  {object} data     {body data}
+ * @param  {callback} callback {description}
+ * @return {type} {description}
+ */
+requestSend: function (data,callback) {
+    console.log("data requestSend",data)
+var url="http://192.168.1.134:1337";
+
+    var options = {
+        method: 'post',
+        json: true,
+        url: url + "/api/Member/getAccessLevel",
+        body: {
+"accessToken": data.data
+// "accessToken": "Sv01q0GyIj0HuWE5"
+        }
+};
+
+    request(
+        options,
+        function (err, httpResponse, body) {
+            // console.log("http call")
+            // console.log("err",err);
+            // console.log("httpResponse",httpResponse);
+            console.log("body",body);
+            var playerAmount= body.data.credit;
+            // console.log("playerAmount....",playerAmount);
+              var accessT= body.data.accessToken;
+            // console.log("accessT....",accessT);
+
+        callback(null,body.data);
+
+        });
+    },
+
 };
 module.exports = _.assign(module.exports, exports, model);

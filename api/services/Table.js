@@ -256,20 +256,20 @@ var model = {
 
 
 blastSocket: function (tableId, extraData, fromUndo) {
-        console.log(tableId);
-        console.log("inside blastSocket", extraData);
+        // console.log(tableId);
+        // console.log("inside blastSocket", extraData);
         Player.getAllDetails({
             tableId: tableId
         }, function (err, allData) {
             if (err) {
-                console.log(err);
+                // console.log(err);
             } else {
                 if (!_.isEmpty(extraData)) {
                     allData.extra = extraData;
                 } else {
                     allData.extra = {};
                 }
-                console.log("allData.extra", allData.extra);
+                // console.log("allData.extra", allData.extra);
 
                 _.each(allData.players, function (p) {
                     if (!p.tableLeft) {
@@ -586,14 +586,14 @@ blastSocket: function (tableId, extraData, fromUndo) {
     // },
 
  getAllActive: function (data, callback) {
-        console.log("ddddd......",data)
+        // console.log("ddddd......",data)
                 Table.findOne({
                     _id: data.tableId
                 }).exec(function (err, data) {
             if (err) {
                 callback(err);
             } else {
-                console.log("data........",data)
+                // console.log("data........",data)
                 callback(null, data.activePlayer);
             }
     });

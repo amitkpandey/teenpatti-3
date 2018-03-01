@@ -156,7 +156,7 @@ var model = {
      */
     addPlayer: function (data, callback) {
         Player.saveData(data, function (err, data2) {
-            console.log("data..............", data);
+            // console.log("data..............", data);
             if (err) {
                 callback(err, data2);
             } else {
@@ -266,7 +266,7 @@ var model = {
 
     getAllDetails: function (data, callback, newGameCheck = false) {
         var tableId = data.tableId;
-        console.log(data);
+        // console.log(data);
         if (!tableId) {
             callback("Invaid Request");
             return 0;
@@ -418,6 +418,7 @@ var model = {
      * @return {type} {flush gamelogs and creates new game}
      */
     newGame: function (data, callback) {
+        console.log("data in new game",data)
         var Model = this;
         async.waterfall([
             function (callback) {
@@ -432,6 +433,7 @@ var model = {
                     if (err) {
                         callback(err);
                     } else {
+                        console.log("players in new game",players)
                         var turnIndex = _.findIndex(players, function (n) {
                             return n.isDealer;
                         });
@@ -1616,7 +1618,7 @@ var model = {
             },
         }, function (err, response) {
             if (err) {
-                console.log("err", err)
+                // console.log("err", err)
             } else {
                 async.each(response.players, function (player, callback) {
                     // console.log("player.....",player);
@@ -1633,7 +1635,7 @@ var model = {
                     if (err) {
                         callback(err, null);
                     } else {
-                        console.log("in else.....")
+                        // console.log("in else.....")
                         callback(null, response.players);
                     }
                 });
@@ -1651,7 +1653,7 @@ var model = {
      * @return {type} {serve cards to all players}
      */
     serve: function (data, callback) {
-        console.log("data in serve......",data)
+        // console.log("data in serve......",data)
         async.parallel({
             players: function (callback) {
                 Player.find({

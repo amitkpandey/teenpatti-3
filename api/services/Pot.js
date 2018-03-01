@@ -4,8 +4,7 @@ var schema = new Schema({
         ref: 'Table'
     },
     totalAmount: {
-        type: Number,
-        default: 0
+        type: Number
     },
     players: [{
         playerNo: {
@@ -44,7 +43,7 @@ var model = {
         console.log("in savedata");
         var Model = this;
         Model.saveData(data, callback);
-        console.log("data after SaveData",data)
+        console.log("data after SaveData", data)
     },
     getMainPot: function (tableId, callback) {
         Pot.findOne({
@@ -69,7 +68,7 @@ var model = {
                 table.currentRoundAmt = [data];
             }
             table.save(function (err, data) {
-               // console.log(err);
+                // console.log(err);
                 callback(err, data);
             });
         });
@@ -77,21 +76,21 @@ var model = {
     declareWinner: function (allData, callback) {
         async.concat(allData.pots, function (p, callback) {
             var players = _.uniqBy(p.players, "playerNo");
-           // console.log("players", players);
+            // console.log("players", players);
             var playerNos = _.map(players, "playerNo");
-           // console.log("playerNos ", playerNos);
+            // console.log("playerNos ", playerNos);
             // remove players not in pot and fold
             var playerData = _.filter(allData.players, function (p) {
-              //  console.log("p.playerNo", p.playerNo, _.indexOf(playerNos, p.playerNo));
+                //  console.log("p.playerNo", p.playerNo, _.indexOf(playerNos, p.playerNo));
                 if (_.indexOf(playerNos, p.playerNo) == -1) {
                     return false;
                 } else {
                     return true;
                 };
             });
-           // console.log("playerData ", playerData);
+            // console.log("playerData ", playerData);
             var potPlayers = _.cloneDeep(playerData);
-           
+
         }, function (err, data) {
             if (err) {
                 callback(err);
@@ -103,7 +102,7 @@ var model = {
         });
     },
 
-   
+
     getAmountForPlayer: function (potsInfo, playerNo, round) {
         var paidAmt = 0;
         //console.log("potsInfo", potsInfo);
@@ -124,17 +123,45 @@ var model = {
         return paidAmt;
     },
 
+    //amountTobeAdded
+    addAmountToPot: function (data, callback) {
+        console.log("data in addmount", data);
+        var potAmt = data.sendAmount;
+        console.log("potAmt",potAmt);
+        Pot.findOne({
+
+        }).exec(function (err, data) {
+            if (err) {
+                console.log("err", err);
+                callback(err, null);
+            } else {
+                console.log("ddd", data);
+                var pot = data;
+                console.log("pot",pot);
+                pot.totalAmount=potAmt;
+                Pot.saveData(pot, function (err, data) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        callback(null, data);
+                    }
+                })
+            }
+        });
+    },
+
+
 
     //amountTobeAdded
     addAmtToPot: function (data, callback) {
         var pots = data.pots;
         var amountTobeAdded = data.amountTobeAdded;
-       // console.log("amountTobeAdded", amountTobeAdded);
+        // console.log("amountTobeAdded", amountTobeAdded);
         async.eachOfSeries(pots, function (item, key, callback) {
             var player = {};
             var deductAmt = 0;
             var payAmt = item.payableAmt;
-           // console.log("payableAmt ", item, key);
+            // console.log("payableAmt ", item, key);
             ///////////////////////////////////
             // handle if someone has done allIn before with lesser amount
             //   amountTobeAdded = amountTobeAdded - payAmt;
@@ -145,7 +172,7 @@ var model = {
             var allInPlayer = _.filter(data.players, function (p) {
                 return p.isActive && !p.isFold && p.isAllIn && p.playerNo != data.currentPlayer.playerNo
             });
-           // console.log("allInPlayer...........", allInPlayer);
+            // console.log("allInPlayer...........", allInPlayer);
             _.each(allInPlayer, function (ap) {
                 paidAllInAmt = 0;
                 players = _.filter(item.players, function (p) {
@@ -158,7 +185,7 @@ var model = {
 
             var minAllInAmt = _.min(allInPlayerAmt);
 
-        
+
 
 
 
@@ -166,7 +193,7 @@ var model = {
             //add all the remaining money if is greater than payable money
 
             if (key == (pots.length - 1) && amountTobeAdded > payAmt) {
-               // console.log("(pots.length - 1) ", (pots.length - 1), "key ", key);
+                // console.log("(pots.length - 1) ", (pots.length - 1), "key ", key);
                 payAmt = amountTobeAdded;
             }
 
@@ -246,7 +273,7 @@ var model = {
             }
         }, callback);
     },
- 
+
     //params: playerNo, amount, round, PotId
     makeEntryAddAmount: function (data, currentPlayer, callback) {
         // console.log(data);

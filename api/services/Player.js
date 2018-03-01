@@ -214,21 +214,32 @@ var model = {
             callback(err, userData);
         });
     },
-    getAll: function (data, callback) {
+
+
+getAll: function (data, callback) {
         var cards = {};
         async.parallel({
-            playerCards: function (callback) {
+            players: function (callback) {
                 Player.find({}, {
                     playerNo: 1,
+                    table: 1,
+                    name:1,
+                    image:1,
+                    userType:1,
                     isTurn: 1,
                     isActive: 1,
                     isDealer: 1,
                     isFold: 1,
                     cards: 1,
                     showCard: 1,
-                    _id: 0,
+                    _id: 1,
                     isBlind: 1,
                     isChaal: 1,
+                    totalAmount:1,
+                    tableLeft:1,
+                    loosingAmt:1,
+                    winningAmt:1
+
                 }).exec(callback);
             },
             currentGameType: function (callback) {
@@ -262,6 +273,9 @@ var model = {
             }
         });
     },
+
+
+
 
 
     getAllDetails: function (data, callback, newGameCheck = false) {

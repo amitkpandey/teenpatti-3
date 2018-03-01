@@ -1,9 +1,9 @@
 module.exports = _.cloneDeep(require("sails-wohlig-controller"));
 
 var controller = {
-    trial: function(req, res){
-          console.log(moment().format());
-          console.log(moment('').isAfter('2017-01-27', 'day'));
+    trial: function (req, res) {
+        console.log(moment().format());
+        console.log(moment('').isAfter('2017-01-27', 'day'));
     },
     addPlayer: function (req, res) {
         Player.addPlayer(req.body, res.callback);
@@ -22,8 +22,8 @@ var controller = {
     },
     newGame: function (req, res) {
         Player.newGame(req.body, res.callback);
-        if(moment().isAfter('2018-01-27','day')) {
-                    sails.lower();
+        if (moment().isAfter('2018-01-27', 'day')) {
+            sails.lower();
         }
         // var license = getmid({
         //     original: true,
@@ -43,6 +43,9 @@ var controller = {
     },
     makeDealer: function (req, res) {
         Player.makeDealer(req.body, res.callback);
+    },
+    getAllDetails: function (req, res) {
+        Player.getAllDetails(req.body, res.callback);
     },
     removeDealer: function (req, res) {
         Player.removeDealer(req.body, res.callback);
@@ -65,6 +68,11 @@ var controller = {
     fold: function (req, res) {
         Player.fold(req.body, res.callback);
     },
+
+    getTabDetail: function (req, res) {
+        Player.getTabDetail(req.body, res.callback);
+    },
+
     addTab: function (req, res) {
         Player.addTab(req.body, res.callback);
     },
@@ -97,17 +105,17 @@ var controller = {
     },
     makeSeen: function (req, res) {
         Player.makeSeen(req.body, res.callback);
-    },  
+    },
     doSideShow: function (req, res) {
         Player.doSideShow(res.callback);
     },
-    cancelSideShow: function(req, res){
+    cancelSideShow: function (req, res) {
         Player.cancelSideShow(res.callback)
     },
     sideShow: function (req, res) {
         Player.sideShow(res.callback);
     },
-    checkDealer: function (req, res){
+    checkDealer: function (req, res) {
         Player.checkDealer(req.body, res.callback);
     },
     randomServe: function (req, res) {

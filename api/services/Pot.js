@@ -40,7 +40,7 @@ var model = {
      * @return {type} {creates new pot for each game}
      */
     createPot: function (data, callback) {
-        console.log("in savedata");
+        console.log("in savedata",data);
         var Model = this;
         Model.saveData(data, callback);
         console.log("data after SaveData", data)
@@ -126,7 +126,7 @@ var model = {
     //amountTobeAdded
     addAmountToPot: function (data, callback) {
         console.log("data in addmount", data);
-        var potAmt = data.sendAmount;
+        var potAmt = data.data.sendAmount;
         console.log("potAmt",potAmt);
         Pot.findOne({
 

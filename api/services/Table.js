@@ -181,7 +181,7 @@ var model = {
             if (err) {
                 callback(err);
             } else {
-                
+
                 if (_.isEmpty(result.player) || _.isEmpty(result.table)) {
                     callback("Invalide Request");
                     return 0;
@@ -255,7 +255,53 @@ var model = {
     },
 
 
-blastSocket: function (tableId, extraData, fromUndo) {
+    //tableShow
+
+    tableShow: function (data, callback) {
+        console.log("in table show", data)
+        async.parallel({
+            table: function (callback) {
+                Table.findOne({
+                    _id: data.tableId,
+                }).exec(callback);
+            },
+            pot: function (callback) {
+                Pot.findOne({
+
+                }).exec(callback);
+            },
+        }, function (err, data) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, data);
+                console.log("data in tableShow", data)
+                if (data.table.tableShow == data.pot.totalAmount) {
+                    console.log("table show");
+
+                    // Player.update({
+                    //     table: data.tableId
+                    // }, {
+                    //     $set: {
+                    //         isBlind: false
+                    //     }
+                    // });
+
+                    Player.update({
+                        table: data.tableId
+                    }, {
+                        $set: {
+                            isBlind: false
+                        }
+                    })
+                }
+            }
+        });
+    },
+
+
+
+    blastSocket: function (tableId, extraData, fromUndo) {
         // console.log(tableId);
         // console.log("inside blastSocket", extraData);
         Player.getAllDetails({
@@ -334,8 +380,8 @@ blastSocket: function (tableId, extraData, fromUndo) {
                 });
 
                 if (playerIndex >= 0) {
-                    console.log("Player Already Added");
-                    // callback("Player Already Added");
+                    // console.log("Player Already Added");
+                    callback("Player Already Added");
                     return 0;
                 }
 
@@ -345,7 +391,7 @@ blastSocket: function (tableId, extraData, fromUndo) {
                 });
 
                 if (positionFilled >= 0) {
-                    console.log("position already filled")
+                    // console.log("position already filled")
                     callback("position filled");
                     return 0;
                 }
@@ -359,7 +405,7 @@ blastSocket: function (tableId, extraData, fromUndo) {
                 player.image = data.image;
                 player.name = data.name;
                 player.userType = data.userType;
-                player.isActive=true;
+                player.isActive = true;
                 // player.socketId = data.socketId;
                 // player.autoRebuy = data.autoRebuy;
 
@@ -585,24 +631,19 @@ blastSocket: function (tableId, extraData, fromUndo) {
     //     });
     // },
 
- getAllActive: function (data, callback) {
+    getAllActive: function (data, callback) {
         // console.log("ddddd......",data)
-                Table.findOne({
-                    _id: data.tableId
-                }).exec(function (err, data) {
+        Table.findOne({
+            _id: data.tableId
+        }).exec(function (err, data) {
             if (err) {
                 callback(err);
             } else {
                 // console.log("data........",data)
                 callback(null, data.activePlayer);
             }
-    });
-        },
-
-
-
-
-
+        });
+    },
 
 
 

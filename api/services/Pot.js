@@ -40,10 +40,10 @@ var model = {
      * @return {type} {creates new pot for each game}
      */
     createPot: function (data, callback) {
-        console.log("in savedata",data);
+        // console.log("in savedata",data);
         var Model = this;
         Model.saveData(data, callback);
-        console.log("data after SaveData", data)
+        // console.log("data after SaveData", data)
     },
     getMainPot: function (tableId, callback) {
         Pot.findOne({
@@ -125,9 +125,9 @@ var model = {
 
     //amountTobeAdded
     addAmountToPot: function (data, callback) {
-        console.log("data in addmount", data);
+        // console.log("data in addmount", data);
         var potAmt = data.data.sendAmount;
-        console.log("potAmt",potAmt);
+        // console.log("potAmt",potAmt);
         Pot.findOne({
 
         }).exec(function (err, data) {
@@ -135,9 +135,9 @@ var model = {
                 console.log("err", err);
                 callback(err, null);
             } else {
-                console.log("ddd", data);
+                // console.log("ddd", data);
                 var pot = data;
-                console.log("pot",pot);
+                // console.log("pot",pot);
                 pot.totalAmount=potAmt;
                 Pot.saveData(pot, function (err, data) {
                     if (err) {

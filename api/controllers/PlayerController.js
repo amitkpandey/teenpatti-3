@@ -94,6 +94,11 @@ var controller = {
     getAll: function (req, res) {
         Player.getAll(req.body, res.callback);
     },
+
+    updateSocket: function (req, res) {
+        Player.updateSocket(res.callback);
+    },
+
     allIn: function (req, res) {
         Player.allIn(req.body, res.callback);
     },

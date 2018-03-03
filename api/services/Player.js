@@ -216,16 +216,16 @@ var model = {
     },
 
 
-getAll: function (data, callback) {
+    getAll: function (data, callback) {
         var cards = {};
         async.parallel({
             players: function (callback) {
-                Player.find({}, {
+                Player.find({table : data.tableId}, {
                     playerNo: 1,
                     table: 1,
-                    name:1,
-                    image:1,
-                    userType:1,
+                    name: 1,
+                    image: 1,
+                    userType: 1,
                     isTurn: 1,
                     isActive: 1,
                     isDealer: 1,
@@ -235,10 +235,10 @@ getAll: function (data, callback) {
                     _id: 1,
                     isBlind: 1,
                     isChaal: 1,
-                    totalAmount:1,
-                    tableLeft:1,
-                    loosingAmt:1,
-                    winningAmt:1
+                    totalAmount: 1,
+                    tableLeft: 1,
+                    loosingAmt: 1,
+                    winningAmt: 1
 
                 }).exec(callback);
             },
@@ -432,7 +432,7 @@ getAll: function (data, callback) {
      * @return {type} {flush gamelogs and creates new game}
      */
     newGame: function (data, callback) {
-        console.log("data in new game",data)
+        console.log("data in new game", data)
         var Model = this;
         async.waterfall([
             function (callback) {
@@ -447,7 +447,7 @@ getAll: function (data, callback) {
                     if (err) {
                         callback(err);
                     } else {
-                        console.log("players in new game",players)
+                        console.log("players in new game", players)
                         var turnIndex = _.findIndex(players, function (n) {
                             return n.isDealer;
                         });
@@ -976,6 +976,72 @@ getAll: function (data, callback) {
             },
             Player.changeTurn
         ], callback);
+    },
+
+    updateSocket: function (data, callback) {
+        async.parallel({
+            table: function (callback) {
+                Table.findOne({
+                    _id: data.tableId
+                }).exec(callback)
+            }
+        }, function (err, result) {
+            if (_.isEmpty(result.table)) {
+                callback(err);
+            } else {
+
+                Player.update({
+                    table: data.tableId,
+                }, {
+                    $set: {
+                        socketId: data.socketId
+                    }
+                }).exec(function (err, data) {
+                    Table.blastSocket(result.table._id);
+                    callback(err, data)
+                });
+            }
+        });
+    },
+
+
+    showWinner: function (data, callback) {
+        // console.log("inside showwinner");
+        // console.log(data);
+        var tableId = data.tableId;
+        async.parallel({
+            players: function (callback) {
+                Player.find({
+                    table: data.tableId,
+                    isActive: true,
+                    isFold: false
+                }).lean().exec(callback);
+            },
+            pots: function (callback) {
+                Pot.find({
+                    table: data.tableId
+                }).exec(callback);
+            },
+            config: function (callback) {
+                Config.findOne({
+                    name: 'rackRate'
+                }).exec(callback);
+            }
+        }, function (err, data) {
+            if (err) {
+                callback(err);
+            } else {
+                // console.log("data", data);
+                Pot.declareWinner(data, function (err, data1) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        Table.blastSocketWinner(tableId);
+                        callback();
+                    }
+                });
+            }
+        });
     },
 
 

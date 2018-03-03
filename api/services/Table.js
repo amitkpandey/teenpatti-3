@@ -258,7 +258,6 @@ var model = {
     //tableShow
 
     tableShow: function (data, callback) {
-        console.log("in table show", data)
         async.parallel({
             table: function (callback) {
                 Table.findOne({
@@ -274,27 +273,18 @@ var model = {
             if (err) {
                 callback(err, null);
             } else {
-                callback(null, data);
-                console.log("data in tableShow", data)
-                if (data.table.tableShow == data.pot.totalAmount) {
-                    console.log("table show");
-
-                    // Player.update({
-                    //     table: data.tableId
-                    // }, {
-                    //     $set: {
-                    //         isBlind: false
-                    //     }
-                    // });
-
-                    Player.update({
-                        table: data.tableId
-                    }, {
-                        $set: {
-                            isBlind: false
-                        }
-                    })
-                }
+                    if (data.table.tableShow == data.pot.totalAmount) {
+                        Player.update({
+                            table: data.tableId
+                        }, {
+                            $set: {
+                                isBlind: false
+                            }
+                        }, function (err, data) {
+                            Player.blastSocket();
+                            callback(err, data);
+                        });
+                    }
             }
         });
     },
